@@ -8,6 +8,11 @@ GameObject::GameObject()
 	isActive = true;
 }
 
+GameObject::~GameObject()
+{
+
+}
+
 void GameObject::LoadImage(const wchar_t* filename)
 {
 	image = MyDrawEngine::GetInstance()->LoadPicture(filename);
@@ -15,11 +20,6 @@ void GameObject::LoadImage(const wchar_t* filename)
 
 void GameObject::render()
 {
-	/*if(isActive)
-	{
-		MyDrawEngine::GetInstance()->DrawAt(position, image, 1.0f, angle);
-	}*/
-
 	MyDrawEngine::GetInstance()->DrawAt(position, image, 1.0f, angle);
 }
 
@@ -27,6 +27,18 @@ bool GameObject::checkIfActive() const
 {
 	return isActive;
 }
+
+void GameObject::DrawCollision()
+{
+
+}
+
+Vector2D GameObject::getPosition()
+{
+	return Vector2D();
+}
+
+
 
 
 

@@ -6,6 +6,11 @@ Bullet::Bullet()
 	lifeTime = 2.0f;	//Getting rid of Warning
 }
 
+Bullet::~Bullet()
+{
+
+}
+
 void Bullet::initialise(Vector2D startPosition, Vector2D startVelocity)
 {
 	position = startPosition;
@@ -23,4 +28,15 @@ void Bullet::update(float frameTime)
 	{
 		isActive = false;
 	}
+}
+
+IShape2D& Bullet::GetShape()
+{
+	collisionShape.PlaceAt(position, 32);
+	return collisionShape;
+}
+
+void Bullet::HandleCollision(GameObject& other)
+{
+
 }

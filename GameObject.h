@@ -14,10 +14,15 @@ protected:
 
 public:
 	GameObject();
+	~GameObject();
 	void LoadImage(const wchar_t* filename);
 	virtual void render();	//Allows each derived class to replace this if needed
 	virtual void update(float frameTime) = 0;	//Pure Abstract Function
-
 	bool checkIfActive() const;
+
+	virtual IShape2D& GetShape() = 0;
+	virtual void HandleCollision(GameObject& other) = 0;
+	virtual void DrawCollision();
+	virtual Vector2D getPosition();
 };
 

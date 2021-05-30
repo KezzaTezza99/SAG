@@ -3,29 +3,32 @@
 #include "mysoundengine.h"
 #include "GameObject.h"
 #include "ObjectManager.h"
+#include "Player.h"
 
-class Player: public GameObject
+class EnemyShip: public GameObject
 {
 private:
 	Vector2D velocity;
 	Vector2D acceleration;
-
-	//This gives poiner to ObjectManager and allows us to create Bullets etc 
+	Vector2D playerPos;
+	Vector2D playerPosition;
+	//Want the Ship to create bullets to shoot player
 	ObjectManager* pObjectManager;
-	float shootDelay;	//Allows us to shoot one bullet every time - every 0.5 seconds
+	float shootDelay;
 	Circle2D collisionShape;
+	Player* pThePlayer;
 
 public:
-	Player();
-	~Player();
-	void initialise(ObjectManager* pObjectManager);
+	EnemyShip();
+	~EnemyShip();
+	void initialise(ObjectManager* pObjectManager, Player* pThePlayer);
 	void update(float frameTime);
 	IShape2D& GetShape();
 	void HandleCollision(GameObject& other);
 	void DrawCollision();
 	Vector2D getPosition();
+	void getPlayerPosition();
+	void getPlayer();
 
-	bool isDead() const;
 };
-
 
