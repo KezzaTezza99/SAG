@@ -1,6 +1,4 @@
 // GameCode.cpp		
-
-
 #include "gamecode.h"
 #include "mydrawengine.h"
 #include "mysoundengine.h"
@@ -14,6 +12,7 @@
 #include "Rock.h"
 #include "Stars.h"
 #include "EnemyShip.h"
+#include "LevelManager.h"
 
 Game::Game()
 {
@@ -299,45 +298,16 @@ ErrorType Game::StartOfGame()
    // Code to set up your game *********************************************
    // **********************************************************************
 
-   //Creating a Seed to Ensure Random Number Generation is always Random 
+	gt.mark();
+	gt.mark();
+
+	//Creating a Seed to Ensure Random Number Generation is always Random 
 	srand(unsigned int(time(NULL)));	//If this isnt here random number will always produce the same value
 
-	gt.mark();
-	gt.mark();
-
-	//*************************
-	//Adding the Player
-	Player* pThePlayer = new Player();
-	pThePlayer->initialise(&objectManager);		//Need to pass in reference to object manager
-	objectManager.addObject(pThePlayer);
-	//**************************
-	
-	//Adding the Asteroids
-	for (int i = 0; i < 10; i++)
-	{
-		Rock* pRocks = new Rock();
-		Vector2D randomPosition;
-		randomPosition.setBearing(rand() % 628 / 100.0f, rand() % 500 + 500.0f);
-		Vector2D randomVelocity(float(rand() % 300 - 100), float(rand() % 300 - 100));
-		pRocks->initialise(randomPosition, randomVelocity);
-		objectManager.addObject(pRocks);
-	}
-
-	//Adding Stars
-	for (int i = 0; i < 10; i++)
-	{
-		Stars* pStars = new Stars();
-
-		Vector2D randomPosition;
-		randomPosition.setBearing(rand() % 1000 / 100.0f, rand() % 1000 + 1000.0f);
-		pStars->initialise(randomPosition);
-		objectManager.addObject(pStars);
-	}
-
-	//Adding the Enemy Ship
-	EnemyShip* pShip = new EnemyShip();
-	pShip->initialise(&objectManager, &*pThePlayer);
-	objectManager.addObject(pShip);
+	//Adding Level Manager
+	LevelManager* pLevelManager = new LevelManager();
+	pLevelManager->initialise(&objectManager);
+	objectManager.addObject(pLevelManager);
 
 	//ObjectManager objectFac;
 	//objectFac.addObjectToFactory(L"Player", Player::createPlayer&);
@@ -369,7 +339,7 @@ ErrorType Game::Update()
    // *********************************************************************
    
 	gt.mark();
-	
+
 	objectManager.renderAll();
 	objectManager.updateAll(float(gt.mdFrameTime));
 	objectManager.checkAllCollisions();
@@ -379,7 +349,6 @@ ErrorType Game::Update()
 	objectFac.renderAll();
 	objectFac.updateAll(float(gt.mdFrameTime));*/
 	
-
    // *********************************************************************
    // *********************************************************************
 

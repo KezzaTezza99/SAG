@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "ObjectManager.h"
 #include "Player.h"
+#include "LevelManager.h"
 
 class EnemyShip: public GameObject
 {
@@ -21,7 +22,7 @@ private:
 public:
 	EnemyShip();
 	~EnemyShip();
-	void initialise(ObjectManager* pObjectManager, Player* pThePlayer);
+	void initialise(ObjectManager* pObjectManager, Player* pThePlayer, Vector2D randomStartPosition);
 	void update(float frameTime);
 	IShape2D& GetShape();
 	void HandleCollision(GameObject& other);

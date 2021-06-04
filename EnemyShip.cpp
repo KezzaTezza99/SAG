@@ -13,7 +13,6 @@ const float BULLETSPEED = 400.0f;
 
 EnemyShip::EnemyShip()
 {
-	position.set(500, 500);
 	velocity.set(0, 0);
 	angle = 0;
 	shootDelay = 0;
@@ -27,9 +26,9 @@ EnemyShip::~EnemyShip()
 
 }
 
-void EnemyShip::initialise(ObjectManager* pObjectManager, Player* pThePlayer)
+void EnemyShip::initialise(ObjectManager* pObjectManager, Player* pThePlayer, Vector2D randomStartPosition)
 {
-	position.set(500, 500);
+	position = randomStartPosition;
 	velocity.set(0, 0);
 	angle = 0;
 	LoadImage(L"enemy.bmp");
@@ -41,9 +40,16 @@ void EnemyShip::initialise(ObjectManager* pObjectManager, Player* pThePlayer)
 
 void EnemyShip::update(float frameTime)
 {
-	Vector2D directionOfPlayer = playerPos - position + velocity * frameTime;
-	position = position + directionOfPlayer * frameTime;
+	// LOOK AT PLAYER
+	Vector2D playerAngle = playerPos.unitVector();
+	Vector2D shipAngle = position.unitVector();
 
+	Vector2D angleNeeded = playerAngle  - shipAngle;
+
+	velocity = velocity - angleNeeded * frameTime;
+	Vector2D directionOfPlayer = playerPos - position + velocity * frameTime;
+
+	position = position + directionOfPlayer * frameTime;
 
 	//Only Get the players position if the player is Alive
 	//Without the check it crashes 
@@ -51,11 +57,33 @@ void EnemyShip::update(float frameTime)
 	{
 		getPlayer();
 	}
+
+	// ENEMY SHOOT PLAYER
+	/*if (shootDelay <= 0)	//Only allowed to shoot when shoot delay is 0
+	{
+		Bullet* pBullet = new Bullet();
+		if (pBullet)
+		{
+			Vector2D vel;
+			vel.setBearing(playerAngle, BULLETSPEED);
+			Vector2D offset;	//This will make the bullets appear in front of Player not centre
+			offset.setBearing(playerAngle, 65.0f);
+			pBullet->initialise(position + offset, vel + velocity);
+
+			if (pObjectManager)
+			{
+				pObjectManager->addObject(pBullet);
+				shootDelay = 0.5f;	//Setting to 0.5 every time we have shot one bullet
+			}
+		}
+	}
+	//Adding a timer to count down before allowing us to shoot again
+	shootDelay = shootDelay - frameTime; */
 }
 
 IShape2D& EnemyShip::GetShape()
 {
-	collisionShape.PlaceAt(position, 30.0f);
+	collisionShape.PlaceAt(position, 50.0f);
 	return collisionShape;
 }
 

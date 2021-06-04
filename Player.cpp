@@ -18,7 +18,8 @@ Player::Player()
 	angle = 0;
 	shootDelay = 0;
 
-	this->pObjectManager = pObjectManager;	//This is here to stop a warning i was getting with not initilazing member variables
+	//This is here to stop a warning I was getting with not initilazing member variables
+	this->pObjectManager = pObjectManager;
 }
 
 Player::~Player()
@@ -69,7 +70,7 @@ void Player::update(float frameTime)
 
 	velocity = velocity - velocity * cFriction * frameTime;
 	position = position + velocity * frameTime;
-
+	
 	//Shooting
 	if (pInputs->KeyPressed(DIK_SPACE) && shootDelay <= 0)	//Only allowed to shoot when shoot delay is 0
 	{
@@ -104,7 +105,6 @@ void Player::HandleCollision(GameObject& other)
 	if (typeid(other) == typeid(Rock))
 	{
 		isActive = false;
-		MyDrawEngine::GetInstance()->WriteText(position, (L"You are Dead"), MyDrawEngine::RED);
 	}
 	else if (typeid(other) == typeid(EnemyShip))
 	{

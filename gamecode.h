@@ -11,7 +11,6 @@
 #include "mydrawengine.h"
 #include "gametimer.h"
 #include "ObjectManager.h"
-#include "Player.h"
 
 // This is a hack for reading keyboard in situations where you don't want to
 // use a full input system.

@@ -1,5 +1,7 @@
 #include "GameObject.h"
-
+// TO-DO
+//MAKE GAME OBJECTS TELL LEVEL MANAGER WE HAVE DIED TO STOP NULL POINTER WHEN WE DEAD
+//MAKE COMPONENT SYSTEM
 GameObject::GameObject()
 {
 	image = -1;		//There isnt an Image yet

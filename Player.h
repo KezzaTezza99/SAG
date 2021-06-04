@@ -12,6 +12,7 @@ private:
 
 	//This gives poiner to ObjectManager and allows us to create Bullets etc 
 	ObjectManager* pObjectManager;
+
 	float shootDelay;	//Allows us to shoot one bullet every time - every 0.5 seconds
 	Circle2D collisionShape;
 
