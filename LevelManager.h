@@ -13,9 +13,8 @@ private:
 	int numAsteroids;
 	int numShips; 
 
-	Vector2D randomPosition;
-
-	Circle2D collisionShape;
+	Vector2D randomPosition;	//Creating a random position vector for Enemy Ships to Spawn
+	Circle2D collisionShape;	
 	ObjectManager* pObjectManager;
 	Player* m_ThePlayer;
 public:
@@ -28,7 +27,7 @@ public:
 	void update(float frameTime);
 	IShape2D& GetShape();
 	void HandleCollision(GameObject& other);
-	void DrawCollision();
+	void DrawCollision();	//Used for debugging while messing with Collisions 
 
 	void enemyDead();
 	void playerDead();

@@ -13,6 +13,7 @@ private:
 	Vector2D acceleration;
 	Vector2D playerPos;
 	Vector2D playerPosition;
+	Vector2D currentPosition;
 	//Want the Ship to create bullets to shoot player
 	ObjectManager* pObjectManager;
 	float shootDelay;

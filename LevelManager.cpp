@@ -5,23 +5,27 @@
 #include "Stars.h"
 #include "Player.h"
 
+
 /*
-	TODO REMOVE THE MEMBER VARIABLE FOR PLAYER 
-	ALSO PUT ENEMY WITH PLAYER AND IT WORKS PROPERLY 
-	DO MORE TESTING 
-	EXPERIMENT WITH MEMBER VARIABLE FIRST ACTUALLY COULD MAKE IT WORK?
+		//THIS CREATES A PATTERN SUCH AS A WALL
+		for(int x = 0; x < 5; x++)
+			for (int y = 0; y < 5; y++)
+			{
+				float spacing = 200.00f;
 
-	//Get Plasters tomorrow 
-	//Get drinks
-	//Get cordial and water for hotel
-	//Crisps / little snacks
-
+				Stars* pTheStar = new Stars();
+				Vector2D pos;
+				pos.set(float(x) * spacing, float(y) * spacing);
+				pTheStar->initialise(pos);
+				pObjectManager->addObject(pTheStar);
+			}
 */
+
 LevelManager::LevelManager()
 {
 	levelNumber = 1;
-	spawnShip = 5.00f;	//Enemy Ship
-	endGameTime = 30.00f;
+	spawnShip = 0.00f;	//Enemy Ship
+	endGameTime = 0.00f;
 	numAsteroids = 0;
 	numShips = 0;
 
@@ -39,7 +43,6 @@ void LevelManager::startLevel()
 	levelNumber++;
 	if (levelNumber == 1)
 	{
-
 		Player* pThePlayer = new Player();
 		pThePlayer->initialise(&*pObjectManager);		//Need to pass in reference to object manager
 		pObjectManager->addObject(pThePlayer);
@@ -52,17 +55,18 @@ void LevelManager::startLevel()
 		pShip->initialise(&*pObjectManager, &*pThePlayer, randomPosition);
 		pObjectManager->addObject(pShip);
 
-		this->m_ThePlayer = pThePlayer;
-
+		this->m_ThePlayer = pThePlayer;		//Seems to fix the issue with the enemies always going to 0,0
+											//Think I was sending a NULLPTR too the enemy somehow 
+											//Also allows me to have access too the player in any function
 
 		//Adding the Asteroids
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < numAsteroids; i++)
 		{
 			Rock* pRocks = new Rock();
 			Vector2D randomPosition;
 			randomPosition.setBearing(rand() % 628 / 100.0f, rand() % 500 + 500.0f);
 			Vector2D randomVelocity(float(rand() % 400 - 100), float(rand() % 400 - 100));
-			pRocks->initialise(randomPosition, randomVelocity);
+			pRocks->initialise(&*pObjectManager,randomPosition, randomVelocity);
 			pObjectManager->addObject(pRocks);
 		}
 
@@ -89,7 +93,7 @@ void LevelManager::startLevel()
 	if (levelNumber == 3)
 	{
 		//Spawn a bunch of ships
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < numShips; i++)
 		{
 			EnemyShip* pShip = new EnemyShip();
 			pShip->initialise(&*pObjectManager, &*m_ThePlayer, randomPosition);
@@ -110,8 +114,8 @@ void LevelManager::initialise(ObjectManager* pObjectManager)
 	levelNumber = 0;
 	spawnShip = 5.00f;	//Enemy Ship
 	endGameTime = 30.00f;
-	numAsteroids = 0;
-	numShips = 0;
+	numAsteroids = 10;
+	numShips = 5;
 
 	this->pObjectManager = pObjectManager;
 

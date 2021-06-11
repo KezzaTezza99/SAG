@@ -4,6 +4,7 @@
 #include "Bullet.h"
 #include <typeinfo>
 #include "Rock.h"
+#include "Explosion.h"
 
 const float cAcceleration = 200.0f;
 //const float cGravity = 250.0f;	
@@ -29,6 +30,7 @@ EnemyShip::~EnemyShip()
 void EnemyShip::initialise(ObjectManager* pObjectManager, Player* pThePlayer, Vector2D randomStartPosition)
 {
 	position = randomStartPosition;
+	currentPosition = position;
 	velocity.set(0, 0);
 	angle = 0;
 	LoadImage(L"enemy.bmp");
@@ -93,12 +95,18 @@ void EnemyShip::HandleCollision(GameObject& other)
 	if (typeid(other) == typeid(Rock))
 	{
 		isActive = false;
+		Explosion* pExplosion = new Explosion();
+		pExplosion->initialise(position);
+		pObjectManager->addObject(pExplosion);
 	}
 
 	//If collides with Bullet it will Dissapear 
 	if (typeid(other) == typeid(Bullet))
 	{
 		isActive = false;
+		Explosion* pExplosion = new Explosion();
+		pExplosion->initialise(position);
+		pObjectManager->addObject(pExplosion);
 	}
 }
 
@@ -113,6 +121,8 @@ void EnemyShip::DrawCollision()
 Vector2D EnemyShip::getPosition()
 {
 	return position;
+
+	currentPosition = getPosition();
 }
 
 void EnemyShip::getPlayerPosition()

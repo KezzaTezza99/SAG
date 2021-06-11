@@ -8,10 +8,6 @@
 #include "errorlogger.h"
 #include <math.h>
 #include "shapes.h"
-#include "Player.h"
-#include "Rock.h"
-#include "Stars.h"
-#include "EnemyShip.h"
 #include "LevelManager.h"
 
 Game::Game()

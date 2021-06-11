@@ -16,6 +16,7 @@ public:
 	void initialise(Vector2D startPosition, Vector2D startVelocity);
 	void update(float frameTime);
 	IShape2D& GetShape();
+	void DrawCollision();
 	void HandleCollision(GameObject& other);
 };
 

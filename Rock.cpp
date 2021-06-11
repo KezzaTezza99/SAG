@@ -1,6 +1,8 @@
 #include "Rock.h"
 #include "Bullet.h"
 #include "Player.h"
+#include "RockDust.h"
+#include "Explosion.h"
 
 const float cTurnSpeed = 1.0f;
 const float angle = 0.0f;
@@ -8,6 +10,7 @@ const float angle = 0.0f;
 Rock::Rock()
 {
 	velocity.set(0, 0);
+	this->pObjectManager = pObjectManager;
 }
 
 Rock::~Rock()
@@ -15,11 +18,34 @@ Rock::~Rock()
 
 }
 
-void Rock::initialise(Vector2D startPosition, Vector2D startVelocity)
+void Rock::initialise(ObjectManager* pObjectManager, Vector2D startPosition, Vector2D startVelocity)
 {
 	position = startPosition;
 	velocity = startVelocity;
-	LoadImage(L"rock1.bmp");
+	this->pObjectManager = pObjectManager;
+
+	//Need to Decide on Rock 1-4 by randomly choosing a Number
+	int imageNum = rand() % 4 + 1;
+
+	if (imageNum == 1)
+	{
+		LoadImage(L"rock1.bmp");
+	}
+
+	if (imageNum == 2)
+	{
+		LoadImage(L"rock2.bmp");
+	}
+
+	if (imageNum == 3)
+	{
+		LoadImage(L"rock3.bmp");
+	}
+
+	if (imageNum == 4)
+	{
+		LoadImage(L"rock4.bmp");
+	}
 }
 
 void Rock::update(float frameTime)
@@ -47,19 +73,31 @@ void Rock::HandleCollision(GameObject& other)
 		{
 			velocity = velocity - 2 * (velocity * normal) * normal;		
 			velocity = velocity * 0.6f;
+
+			//RockDust* pRockDust = new RockDust();
+			//pRockDust->initialise(position);
+			//pObjectManager->addObject(pRockDust);
 		}
 	}
 
 	//If the Asteroid collids with a Bullet then Deactive the Asteroid
-	else if (typeid(other) == typeid(Bullet))
+	if(typeid(other) == typeid(Bullet))
 	{
 		//Sets the Asteroid to not active which makes it dissapear 
-		isActive = false;	//The Object Manager will then delete from Game
-							//No need to make the bullet do anything in Bullet Collision as it dissapears after 
-							//the lifespan of the bullet hits 0 
+		isActive = false;	//The Object Manager will then delete from Game 
+	}
+
+	if (typeid(other) == typeid(Player))
+	{
+		//Creating a Vector for the Normal
+		Vector2D normal = (position - other.getPosition()).unitVector();
+		if (normal * velocity < 0)
+		{
+			velocity = velocity - 2 * (velocity * normal) * normal;
+			velocity = velocity * 0.6f;
+		}
 	}
 }
-
 void Rock::DrawCollision()
 {
 	//Used for Debugging Purposes - Shows the Hit Boxes when I press H

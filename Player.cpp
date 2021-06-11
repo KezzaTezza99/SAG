@@ -4,6 +4,7 @@
 #include <typeinfo>
 #include "Rock.h"
 #include "EnemyShip.h"
+#include "Explosion.h"
 
 const float cAcceleration = 200.0f;	
 //const float cGravity = 250.0f;	
@@ -82,7 +83,6 @@ void Player::update(float frameTime)
 			Vector2D offset;	//This will make the bullets appear in front of Player not centre
 			offset.setBearing(angle, 45.0f);
 			pBullet->initialise(position + offset, vel + velocity);
-
 			if (pObjectManager)
 			{
 				pObjectManager->addObject(pBullet);
@@ -104,11 +104,20 @@ void Player::HandleCollision(GameObject& other)
 {
 	if (typeid(other) == typeid(Rock))
 	{
-		isActive = false;
+		//Creating a Vector for the Normal
+		Vector2D normal = (position - other.getPosition()).unitVector();
+		if (normal * velocity < 0)
+		{
+			velocity = velocity - 2 * (velocity * normal) * normal;
+			velocity = velocity * 0.6f;
+		}	
 	}
 	else if (typeid(other) == typeid(EnemyShip))
 	{
 		isActive = false;
+		Explosion* pExplosion = new Explosion();
+		pExplosion->initialise(position);
+		pObjectManager->addObject(pExplosion);
 		MyDrawEngine::GetInstance()->WriteText(position, (L"You are Dead"), MyDrawEngine::RED);
 	}
 }
