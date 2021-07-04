@@ -43,6 +43,7 @@ void Player::initialise(ObjectManager* pObjectManager)
 
 void Player::update(float frameTime)
 {
+	//Allowing the Player to move endlessly 
 	MyDrawEngine::GetInstance()->theCamera.PlaceAt(Vector2D(position.XValue + 0.0f, -position.YValue + 0.0f));
 
 	MyInputs* pInputs = MyInputs::GetInstance();

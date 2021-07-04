@@ -18,6 +18,6 @@ public:
 
 	//Turning the Object Manager into Object Factory
 	//GameObject* add(std::wstring name);
-	//GameObject* addObjectToFactory(std::wstring name, GameObject*());
+	//GameObject* addObjectToFactory(std::wstring name);
 };
 

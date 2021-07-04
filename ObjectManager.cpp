@@ -3,6 +3,7 @@
 #include "Rock.h"
 #include "Bullet.h"
 #include "Stars.h"
+#include "EnemyShip.h"
 #include "myinputs.h"
 
 ObjectManager::~ObjectManager()
@@ -96,37 +97,43 @@ void ObjectManager::checkAllCollisions()
 	}
 }
 
-//GameObject* ObjectManager::addObjectToFactory(std::wstring name, GameObject*())
-//{
-//	GameObject* pNewObject = nullptr;
-//	
-//	if (name == L"Player")
-//	{
-//		pNewObject = new Player();
-//	}
-//	else if (name == L"Asteroid")
-//	{
-//		pNewObject = new Rock();
-//	}
-//	else if (name == L"Bullet")
-//	{
-//		pNewObject = new Bullet();
-//	}
-//	else if (name == L"Star")
-//	{
-//		pNewObject = new Stars();
-//	}
-//	else
-//	{
-//		ErrorLogger::Write(L"Could not create item: ");
-//		ErrorLogger::Writeln(name.c_str());
-//	}
-//	
-//	if (pNewObject)
-//	{
-//		addObject(pNewObject);
-//	}
-//	
-//	return pNewObject;
-//}
-
+/*
+GameObject* ObjectManager::addObjectToFactory(std::wstring name)
+{
+	GameObject* pNewObject = nullptr;
+	
+	if (name == L"player")
+	{
+		pNewObject = new Player();
+	}
+	else if (name == L"asteroid")
+	{
+		pNewObject = new Rock();
+	}
+	else if (name == L"bullet")
+	{
+		pNewObject = new Bullet();
+	}
+	else if (name == L"star")
+	{
+		pNewObject = new Stars();
+	}
+	else if (name == L"enemyship")
+	{
+		pNewObject == new EnemyShip();
+	}
+	else
+	{
+		ErrorLogger::Write(L"Could not create item: ");
+		ErrorLogger::Writeln(name.c_str());
+	}
+	
+	//If the Pointer to object exists send it to add object
+	if (pNewObject)
+	{
+		addObject(pNewObject);
+	}
+	
+	return pNewObject;
+}
+*/

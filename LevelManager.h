@@ -17,6 +17,7 @@ private:
 	Circle2D collisionShape;	
 	ObjectManager* pObjectManager;
 	Player* m_ThePlayer;
+
 public:
 	LevelManager();
 	~LevelManager();
