@@ -1,30 +1,42 @@
 #include "ArcadeMachine.h"
+#include "ArcadePlayer.h"
 
-/*
-    MAKE OBJECT FACTORY
-*/
-
-/*
 ArcadeMachine::ArcadeMachine()
 {
+    position.set(0, 0);
+    this->pObjectManager = pObjectManager;
 }
 
 ArcadeMachine::~ArcadeMachine()
 {
 }
 
-void ArcadeMachine::initialise(ObjectManager* pObjectManager, LevelManager* pLevelManager)
+void ArcadeMachine::initialise(ObjectManager* pObjectManager)
 {
     this->pObjectManager = pObjectManager;
-    this->pLevelManager = pLevelManager;
-    position.set(0, 0);
-
-    LoadImage(L"rock1.bmp");
+    
+    position.set(100, 100);
+    startMiniGame = false;
+    LoadImage(L"enemy.bmp");            //Change this
 }
 
 void ArcadeMachine::update(float frameTime)
 {
-    //Doesn't need to Update just yet
+    //Starts the Mini Game
+    if (startMiniGame)
+    {
+        //Adding Asteroid Level Manager
+        AsteroidsLevelManager* pLevelManager = new AsteroidsLevelManager();
+        pLevelManager->initialise(&*pObjectManager);
+        pObjectManager->addObject(pLevelManager);
+     
+        //Delete the Arcade Machine to Stop Memory Leaks
+        Deactivate();
+    }
+    else
+    {
+        MyDrawEngine::GetInstance()->WriteText(Vector2D(0, 0), L"ARCADE", MyDrawEngine::RED);
+    }
 }
 
 IShape2D& ArcadeMachine::GetShape()
@@ -35,11 +47,26 @@ IShape2D& ArcadeMachine::GetShape()
 
 void ArcadeMachine::HandleCollision(GameObject& other)
 {
-    //Do nothing yet
+    //Start Mini Game
+    if (typeid(other) == typeid(ArcadePlayer))
+    {
+        startMiniGame = true;
+    }
 }
 
 void ArcadeMachine::DrawCollision()
 {
     MyDrawEngine::GetInstance()->FillCircle(collisionShape.GetCentre(), collisionShape.GetRadius(), MyDrawEngine::LIGHTGREEN);
 }
-*/
+
+void ArcadeMachine::SetActivity()
+{
+    isActive = false;
+}
+
+void ArcadeMachine::Deactivate()
+{
+    isActive = false;
+}
+
+

@@ -8,7 +8,9 @@
 #include "errorlogger.h"
 #include <math.h>
 #include "shapes.h"
-#include "LevelManager.h"
+#include "ArcadeMachine.h"
+#include "GameManager.h"
+#include "ArcadePlayer.h"
 
 Game::Game()
 {
@@ -300,18 +302,28 @@ ErrorType Game::StartOfGame()
 	//Creating a Seed to Ensure Random Number Generation is always Random 
 	srand(unsigned int(time(NULL)));	//If this isnt here random number will always produce the same value
 
-	//Adding Level Manager
-	LevelManager* pLevelManager = new LevelManager();
-	pLevelManager->initialise(&objectManager);
-	objectManager.addObject(pLevelManager);
+	////Adding Level Manager
+	//AsteroidsLevelManager* pLevelManager = new AsteroidsLevelManager();
+	//pLevelManager->initialise(&objectManager, L"Asteroids");
+	//objectManager.addObject(pLevelManager);
 
-	//ObjectManager objectFac;
-	//objectFac.addObjectToFactory(L"Player", Player::createPlayer&);
-	//objectFac.addObjectToFactory(L"Player");
+	//Adding Game Manager which will start the Arcade Game and Level Manager
+	//It will then be deleted, when the user choses a mini game the level manager will then be deleted.
+	//Will create a new Level Manager based on the Mini Game
+	GameManager* pGameManager = new GameManager();
+	pGameManager->initialise(&objectManager);
+	objectManager.addObject(pGameManager);
 
+	//Temp / Sort this maybe game manager sends itself and player is created there?
+	ArcadePlayer* pArcadePlayer = new ArcadePlayer();
+	pArcadePlayer->initialise(&*pGameManager);
+	objectManager.addObject(pArcadePlayer);
 	return SUCCESS;
 }
 
+//Make level manager a super class and inherit on it based on what mini game will be played?
+//Use game manager to start the arcade game but then delete it somehow when the mini game is chosen 
+//game manager creates level manager based on mini game?
 
 // Called each frame when in the RUNNING state.
 // Checks for user pressing escape (which puts the game in the PAUSED state)
@@ -361,7 +373,6 @@ ErrorType Game::EndOfGame()
    // Add code here to tidy up ********************************************
    // *********************************************************************
 	objectManager.deleteAll();
-	
 	return SUCCESS;
 }
 

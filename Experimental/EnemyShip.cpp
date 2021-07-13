@@ -108,11 +108,11 @@ void EnemyShip::update(float frameTime)
 	
 	//FIGURE OUT HOW TO MAKE ENEMY LOOK TOWARDS THE PLAYER
 	//angle = playerAngle;
-	angle = (position.angle() - playerPos.angle()) * cTurnSpeed;
-	Vector2D directonOfPlayer = playerPos - position + velocity * frameTime;
-	acceleration.setBearing(angle, cAcceleration);
-	velocity = velocity + acceleration * frameTime;
-	position = position + directonOfPlayer * frameTime;
+	//angle = (position.angle() - playerPos.angle()) * cTurnSpeed;
+	//Vector2D directonOfPlayer = playerPos - position + velocity * frameTime;
+	//acceleration.setBearing(angle, cAcceleration);
+	//velocity = velocity + acceleration * frameTime;
+	//position = position + directonOfPlayer * frameTime;
 
 	//Only Get the players position if the player is Alive
 	//Without the check it crashes 

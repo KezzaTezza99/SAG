@@ -13,7 +13,7 @@ private:
 public:
 	RockDust();
 	~RockDust();
-	void initialise(Vector2D position);
+	void initialise(Vector2D position, float imageSize);
 	void update(float frameTime);
 	void render() override;
 	IShape2D& GetShape();

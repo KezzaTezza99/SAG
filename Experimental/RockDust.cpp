@@ -22,9 +22,10 @@ RockDust::~RockDust()
 
 }
 
-void RockDust::initialise(Vector2D position)
+void RockDust::initialise(Vector2D position, float imageSize)
 {
     this->position = position;
+    this->imageSize = imageSize;
 
     images[0] = MyDrawEngine::GetInstance()->LoadPicture(L"smoke1.bmp");
     images[1] = MyDrawEngine::GetInstance()->LoadPicture(L"smoke2.bmp");
@@ -55,7 +56,7 @@ void RockDust::render()
 {
     //1.5 size 
     //1 good size for small rocks maybe update this to change
-	MyDrawEngine::GetInstance()->DrawAt(position, images[int(currentImage)], 1.5f, angle);
+	MyDrawEngine::GetInstance()->DrawAt(position, images[int(currentImage)], imageSize, angle);
 }
 
 IShape2D& RockDust::GetShape()

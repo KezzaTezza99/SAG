@@ -1,25 +1,20 @@
 #pragma once
-#include "mydrawengine.h"
-#include "mysoundengine.h"
 #include "GameObject.h"
 #include "ObjectManager.h"
-#include "AsteroidsLevelManager.h"
 
-class ArcadeMachine: public GameObject
+class GameManager : public GameObject
 {
 private:
-	ObjectManager* pObjectManager;
 	Circle2D collisionShape;
-	bool startMiniGame;
-	
+	ObjectManager* pObjectManager;
 public:
-	ArcadeMachine();
-	~ArcadeMachine();
+	GameManager();
+	~GameManager();
 	void initialise(ObjectManager* pObjectManager);
+	void render();
 	void update(float frameTime);
 	IShape2D& GetShape();
 	void HandleCollision(GameObject& other);
-	void DrawCollision();
-	void SetActivity();
 	void Deactivate();
 };
+

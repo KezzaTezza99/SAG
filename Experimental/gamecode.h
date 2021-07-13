@@ -11,6 +11,7 @@
 #include "mydrawengine.h"
 #include "gametimer.h"
 #include "ObjectManager.h"
+#include "GameManager.h"
 
 // This is a hack for reading keyboard in situations where you don't want to
 // use a full input system.
@@ -41,7 +42,6 @@ private:
 
 	GameTimer gt;
 	ObjectManager objectManager;
-
 public:
 	static Game instance;          // Singleton instance
 

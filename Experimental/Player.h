@@ -20,7 +20,7 @@ private:
 public:
 	Player();
 	~Player();
-	void initialise(ObjectManager* pObjectManager, Rock* pAsteroids);
+	void initialise(ObjectManager* pObjectManager, Rock* pAsteroids = nullptr);		//Defualt nullptr for player in Arcade
 	void update(float frameTime);
 	IShape2D& GetShape();
 	void HandleCollision(GameObject& other);

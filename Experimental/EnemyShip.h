@@ -4,7 +4,7 @@
 #include "GameObject.h"
 #include "ObjectManager.h"
 #include "Player.h"
-#include "LevelManager.h"
+#include "AsteroidsLevelManager.h"
 
 class EnemyShip: public GameObject
 {

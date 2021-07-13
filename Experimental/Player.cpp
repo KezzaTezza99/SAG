@@ -6,6 +6,7 @@
 #include "EnemyShip.h"
 #include "Explosion.h"
 #include "Mines.h"
+#include "ArcadeMachine.h"
 
 const float cAcceleration = 200.0f;	
 //const float cGravity = 250.0f;	
@@ -39,7 +40,6 @@ void Player::initialise(ObjectManager* pObjectManager, Rock* pAsteroids)
 	angle = 0;
 	RockImageSize = 0.0f;
 	LoadImage(L"spaceship.bmp");
-
 	this->pObjectManager = pObjectManager;
 	this->pAsteroids = pAsteroids;
 	shootDelay = 0;
@@ -139,6 +139,11 @@ void Player::HandleCollision(GameObject& other)
 		pExplosion->initialise(position);
 		pObjectManager->addObject(pExplosion);
 	}
+
+	if (typeid(other) == typeid(ArcadeMachine))
+	{
+		isActive = false;
+	}
 }
 
 void Player::DrawCollision()
@@ -169,8 +174,3 @@ float Player::GetAsteroidSize()
 	RockImageSize = pAsteroids->GetImageSize();
 	return RockImageSize;
 }
-
-
-
-
-

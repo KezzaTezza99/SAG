@@ -5,6 +5,16 @@
 #include "Explosion.h"
 #include "Mines.h"
 
+/* TODO
+			make the dust cloud bigger but then get smaller
+			make player and rock bounce when rock big but smaller rocks only bounce of player
+			no effect on player at all from small rocks
+			smaller rocks get destroyed by bigger ones??
+			As levels increase add smaller rocks randomly to begin with?
+			Add bombs ??
+			event system?
+*/
+
 const float cTurnSpeed = 1.0f;
 const float angle = 0.0f;
 const int OriginalRockCollisionSize = 66;
@@ -95,7 +105,7 @@ void Rock::HandleCollision(GameObject& other)
 		Vector2D normal = (position - other.getPosition()).unitVector();
 		if (normal * velocity < 0)
 		{
-			velocity = velocity - 2 * (velocity * normal) * normal;		
+			velocity = velocity - 2 * (velocity * normal) * normal;
 			velocity = velocity * 0.6f;
 		}
 	}
@@ -111,36 +121,31 @@ void Rock::HandleCollision(GameObject& other)
 	//If the Asteroid collids with a Bullet then Deactive the Asteroid
 	if(typeid(other) == typeid(Bullet))
 	{
-		/* TODO
-			make the dust cloud bigger but then get smaller 
-			make player and rock bounce when rock big but smaller rocks only bounce of player 
-			no effect on player at all from small rocks
-
-			smaller rocks get destroyed by bigger ones??
-			As levels increase add smaller rocks randomly to begin with?
-			Add bombs ??
-			event system?
-		*/
 		//Creating a Dust effect
-		RockDust* pRockDust = new RockDust();
-		pRockDust->initialise(position);
-		pObjectManager->addObject(pRockDust);
+		//Bigger Rocks produce bigger cloud of dust to smaller rocks
+		if (GetImageSize() == 1.0f)
+		{
+			RockDust* pRockDust = new RockDust();
+			pRockDust->initialise(position, 1.5f);
+			pObjectManager->addObject(pRockDust);
+		}
+		else if (GetImageSize() == 0.5f)
+		{
+			RockDust* pRockDust = new RockDust();
+			pRockDust->initialise(position, 1.0f);
+			pObjectManager->addObject(pRockDust);
+		}
+		else
+		{
+			RockDust* pRockDust = new RockDust();
+			pRockDust->initialise(position, 0.5f);
+			pObjectManager->addObject(pRockDust);
+		}
 
 		//Sets the Asteroid to not active which makes it dissapear 
 		isActive = false;	//The Object Manager will then delete from Game 
 		SpawnRock(position);
 	}
-
-	//if (typeid(other) == typeid(Player))
-	//{
-	//	//Creating a Vector for the Normal
-	//	Vector2D normal = (position - other.getPosition()).unitVector();
-	//	if (normal * velocity < 0)
-	//	{
-	//		velocity = velocity - 2 * (velocity * normal) * normal;
-	//		velocity = velocity * 0.6f;
-	//	}
-	//}
 
 	if (typeid(other) == typeid(Mines))
 	{
