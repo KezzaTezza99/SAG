@@ -1,14 +1,14 @@
 #include "Rock.h"
 #include "Bullet.h"
-#include "Player.h"
+#include "AsteroidPlayer.h"
 #include "RockDust.h"
 #include "Explosion.h"
 #include "Mines.h"
 
 /* TODO
 			make the dust cloud bigger but then get smaller
-			make player and rock bounce when rock big but smaller rocks only bounce of player
-			no effect on player at all from small rocks
+			make AsteroidPlayer and rock bounce when rock big but smaller rocks only bounce of AsteroidPlayer
+			no effect on AsteroidPlayer at all from small rocks
 			smaller rocks get destroyed by bigger ones??
 			As levels increase add smaller rocks randomly to begin with?
 			Add bombs ??
@@ -74,7 +74,7 @@ void Rock::update(float frameTime)
 IShape2D& Rock::GetShape()
 {
 	//If the image size is 1 (default) then the collision shape will be the Original size
-	//this size fits the bigger rocks, once the rock is damaged by player it splits up
+	//this size fits the bigger rocks, once the rock is damaged by AsteroidPlayer it splits up
 	//the image size for level 2 rock is half the size so now the collision shape
 	//is also reduced by half to represent a smaller collision surface for the smaller rock
 	//this goes on once again for the final rock which is now 1/4 of the original size
@@ -99,7 +99,7 @@ void Rock::HandleCollision(GameObject& other)
 {
 	//If the Asteroid collides with another it will Bounce
 	//If the rock has been broken
-	if (typeid(other) == typeid(Rock) || typeid(other) == typeid(Player))
+	if (typeid(other) == typeid(Rock) || typeid(other) == typeid(AsteroidPlayer))
 	{
 		//Creating a Vector for the Normal
 		Vector2D normal = (position - other.getPosition()).unitVector();

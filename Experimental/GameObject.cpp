@@ -53,7 +53,7 @@ float GameObject::GetImageSize() const
 
 void GameObject::WrapScreen()
 {
-	//Wrapping the Player around the screen
+	//Wrapping the AsteroidPlayer around the screen
 	//Getting Dimensions of Screen
 	Rectangle2D userScreen = MyDrawEngine::GetInstance()->GetViewport();
 

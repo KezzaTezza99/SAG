@@ -1,5 +1,5 @@
 #include "ObjectManager.h"
-#include "Player.h"
+#include "AsteroidPlayer.h"
 #include "Rock.h"
 #include "Bullet.h"
 #include "Stars.h"
@@ -102,9 +102,9 @@ GameObject* ObjectManager::addObjectToFactory(std::wstring name)
 {
 	GameObject* pNewObject = nullptr;
 	
-	if (name == L"player")
+	if (name == L"AsteroidPlayer")
 	{
-		pNewObject = new Player();
+		pNewObject = new AsteroidPlayer();
 	}
 	else if (name == L"asteroid")
 	{

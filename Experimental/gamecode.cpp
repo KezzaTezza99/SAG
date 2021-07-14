@@ -8,7 +8,7 @@
 #include "errorlogger.h"
 #include <math.h>
 #include "shapes.h"
-#include "ArcadeMachine.h"
+#include "AsteroidArcadeMachine.h"
 #include "GameManager.h"
 #include "ArcadePlayer.h"
 
@@ -44,7 +44,7 @@ ErrorType Game::Main()
 		err= MainMenu();     // Menu at start of game
 		break;
 	case PAUSED:
-		err = PauseMenu();   // Player has paused the game
+		err = PauseMenu();   // AsteroidPlayer has paused the game
 		break;
 	case RUNNING:           // Playing the actual game
 		err= Update();
@@ -190,7 +190,7 @@ ErrorType Game::PauseMenu()
 		m_menuOption=NUMOPTIONS-1;
 	}
 
-   // If player chooses an option ....
+   // If AsteroidPlayer chooses an option ....
 	if(pInputs->NewKeyPressed(DIK_RETURN))
 	{
 		if(m_menuOption ==0)      // Resume
@@ -311,13 +311,9 @@ ErrorType Game::StartOfGame()
 	//It will then be deleted, when the user choses a mini game the level manager will then be deleted.
 	//Will create a new Level Manager based on the Mini Game
 	GameManager* pGameManager = new GameManager();
-	pGameManager->initialise(&objectManager);
+	pGameManager->initialise(&objectManager, &*pGameManager);		//Need to pass itself for deleting
 	objectManager.addObject(pGameManager);
 
-	//Temp / Sort this maybe game manager sends itself and player is created there?
-	ArcadePlayer* pArcadePlayer = new ArcadePlayer();
-	pArcadePlayer->initialise(&*pGameManager);
-	objectManager.addObject(pArcadePlayer);
 	return SUCCESS;
 }
 
@@ -363,7 +359,7 @@ ErrorType Game::Update()
 	return SUCCESS;
 }
 
-// Called when the player ends the game
+// Called when the AsteroidPlayer ends the game
 // Currently this is done from the PAUSED state, when returning to the main menu
 // but could be done by the gameplay programmer in other situations
 // This will be used by the gameplay programmer to clean up

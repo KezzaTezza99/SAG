@@ -1,7 +1,7 @@
 #include "Mines.h"
 #include "Rock.h"
 #include "Bullet.h"
-#include "Player.h"
+#include "AsteroidPlayer.h"
 #include "Explosion.h"
 
 const float cTurnSpeed = 1.0f;
@@ -39,7 +39,7 @@ IShape2D& Mines::GetShape()
 
 void Mines::HandleCollision(GameObject& other)
 {
-    if (typeid(other) == typeid(Player) || typeid(other) == typeid(Rock) 
+    if (typeid(other) == typeid(AsteroidPlayer) || typeid(other) == typeid(Rock) 
         || typeid(other) == typeid(Bullet) || typeid(other) == typeid(Mines))
     {
         isActive = false;

@@ -3,7 +3,7 @@
 #include "GameObject.h"
 #include "GameManager.h"
 #include "ObjectManager.h"
-#include "Player.h"
+#include "AsteroidPlayer.h"
 
 class AsteroidsLevelManager: public GameObject
 {
@@ -20,7 +20,7 @@ private:
 	ObjectManager* pObjectManager;
 	
 	//Need access to these variables outside off their scope when created
-	Player* m_ThePlayer;
+	AsteroidPlayer* m_ThePlayer;
 	Rock* m_pTheAsteroids;
 
 public:

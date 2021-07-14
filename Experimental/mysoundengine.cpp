@@ -24,7 +24,7 @@ MySoundEngine::MySoundEngine(HWND hwnd)
 	HRESULT err;
 	if (FAILED(DirectSoundCreate8(&DSDEVID_DefaultPlayback, &lpds, NULL)))
 	{
-		ErrorLogger::Writeln(L"Failed to create sound player");
+		ErrorLogger::Writeln(L"Failed to create sound AsteroidPlayer");
 		lpds=nullptr;
 	}
 

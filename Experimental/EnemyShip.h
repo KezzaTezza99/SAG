@@ -3,7 +3,7 @@
 #include "mysoundengine.h"
 #include "GameObject.h"
 #include "ObjectManager.h"
-#include "Player.h"
+#include "AsteroidPlayer.h"
 #include "AsteroidsLevelManager.h"
 
 class EnemyShip: public GameObject
@@ -14,18 +14,18 @@ private:
 	Vector2D playerPos;
 	//Vector2D playerPosition;
 	Vector2D currentPosition;
-	//Want the Ship to create bullets to shoot player
+	//Want the Ship to create bullets to shoot AsteroidPlayer
 	ObjectManager* pObjectManager;
 	float shootDelay;
 	Circle2D collisionShape;
-	Player* pThePlayer;
+	AsteroidPlayer* pThePlayer;
 	float playerAngle;
 	float wait;
 
 public:
 	EnemyShip();
 	~EnemyShip();
-	void initialise(ObjectManager* pObjectManager, Player* pThePlayer, Vector2D randomStartPosition);
+	void initialise(ObjectManager* pObjectManager, AsteroidPlayer* pThePlayer, Vector2D randomStartPosition);
 	void update(float frameTime);
 	IShape2D& GetShape();
 	void HandleCollision(GameObject& other);

@@ -76,7 +76,7 @@ public:
    // Gameplay programmer will develop this to create an actual game
 	ErrorType Update();
 
-   // Called when the player ends the game
+   // Called when the AsteroidPlayer ends the game
    // Currently this is done from the PAUSED state, when returning to the main menu
    // but could be done by the gameplay programmer in other situations
    // This will be used by the gameplay programmer to clean up

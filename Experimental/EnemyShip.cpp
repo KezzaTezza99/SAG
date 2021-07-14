@@ -1,5 +1,5 @@
 #include "EnemyShip.h"
-#include "Player.h"
+#include "AsteroidPlayer.h"
 #include "myinputs.h"
 #include "Bullet.h"
 #include <typeinfo>
@@ -28,7 +28,7 @@ EnemyShip::~EnemyShip()
 
 }
 
-void EnemyShip::initialise(ObjectManager* pObjectManager, Player* pThePlayer, Vector2D randomStartPosition)
+void EnemyShip::initialise(ObjectManager* pObjectManager, AsteroidPlayer* pThePlayer, Vector2D randomStartPosition)
 {
 	position = randomStartPosition;
 	currentPosition = position;
@@ -63,7 +63,7 @@ void EnemyShip::update(float frameTime)
 	//position = position + directionOfPlayer * frameTime;
 	////---------------------------------------------------------------------------------
 
-	//ENEMY REPLICATES PLAYER MOVEMENT
+	//ENEMY REPLICATES AsteroidPlayer MOVEMENT
 	//acceleration.setBearing(angle, cAcceleration);
 	//velocity = velocity + acceleration * frameTime;
 	//if (playerAngle <= angle)
@@ -106,7 +106,7 @@ void EnemyShip::update(float frameTime)
 	//velocity = velocity - velocity * cFriction * frameTime;
 	//position = position + directonOfPlayer * frameTime;
 	
-	//FIGURE OUT HOW TO MAKE ENEMY LOOK TOWARDS THE PLAYER
+	//FIGURE OUT HOW TO MAKE ENEMY LOOK TOWARDS THE AsteroidPlayer
 	//angle = playerAngle;
 	//angle = (position.angle() - playerPos.angle()) * cTurnSpeed;
 	//Vector2D directonOfPlayer = playerPos - position + velocity * frameTime;
@@ -114,14 +114,14 @@ void EnemyShip::update(float frameTime)
 	//velocity = velocity + acceleration * frameTime;
 	//position = position + directonOfPlayer * frameTime;
 
-	//Only Get the players position if the player is Alive
+	//Only Get the players position if the AsteroidPlayer is Alive
 	//Without the check it crashes 
 	if (pThePlayer->checkIfActive() == true)	//pThePlayer->checkIfActive() still causes issues
 	{
 		getPlayer();
 	}
 
-	// ENEMY SHOOT PLAYER
+	// ENEMY SHOOT AsteroidPlayer
 	/*if (shootDelay <= 0)	//Only allowed to shoot when shoot delay is 0
 	{
 		Bullet* pBullet = new Bullet();
@@ -129,7 +129,7 @@ void EnemyShip::update(float frameTime)
 		{
 			Vector2D vel;
 			vel.setBearing(playerAngle, BULLETSPEED);
-			Vector2D offset;	//This will make the bullets appear in front of Player not centre
+			Vector2D offset;	//This will make the bullets appear in front of AsteroidPlayer not centre
 			offset.setBearing(playerAngle, 65.0f);
 			pBullet->initialise(position + offset, vel + velocity);
 

@@ -3,9 +3,9 @@
 #include "EnemyShip.h"
 #include "Rock.h"
 #include "Stars.h"
-#include "Player.h"
+#include "AsteroidPlayer.h"
 #include "Mines.h"
-#include "ArcadeMachine.h"
+#include "AsteroidArcadeMachine.h"
 
 /*
 		//THIS CREATES A PATTERN SUCH AS A WALL
@@ -25,11 +25,11 @@
 AsteroidsLevelManager::AsteroidsLevelManager()
 {
 	levelNumber = 1;
-	nextRoundTimer = 0.00f;	//Enemy Ship
-	endGameTime = 0.00f;
-	numOfAsteroids = 0;
+	nextRoundTimer = 30.00f;
+	endGameTime = 60.00f;
+	numOfAsteroids = 10;
 	numOfShips = 0;
-	numOfMines = 0;
+	numOfMines = 2;
 	score = 0;
 
 	this->pObjectManager = pObjectManager;
@@ -59,7 +59,7 @@ void AsteroidsLevelManager::startLevel()
 
 		//this->m_ThePlayer = pThePlayer;		//Seems to fix the issue with the enemies always going to 0,0
 												//Think I was sending a NULLPTR too the enemy somehow 
-												//Also allows me to have access too the player in any function
+												//Also allows me to have access too the AsteroidPlayer in any function
 
 		////Adding the Asteroids
 		for (int i = 0; i < numOfAsteroids; i++)
@@ -75,9 +75,9 @@ void AsteroidsLevelManager::startLevel()
 			this->m_pTheAsteroids = pRocks;
 		}
 
-		//Creating the Asteroids first as the player needs to know about them
+		//Creating the Asteroids first as the AsteroidPlayer needs to know about them
 		//Help with different collisions based on the rock size
-		Player* pThePlayer = new Player();
+		AsteroidPlayer* pThePlayer = new AsteroidPlayer();
 		//Passing in object manager to create bullets
 		pThePlayer->initialise(&*pObjectManager, &*m_pTheAsteroids);
 		pObjectManager->addObject(pThePlayer);
@@ -105,10 +105,21 @@ void AsteroidsLevelManager::startLevel()
 			pObjectManager->addObject(pMines);
 		}
 		numOfMines += 2;
+		numOfAsteroids += 4;
 	}
 
 	if (levelNumber == 2)
 	{
+		for (int i = 0; i < numOfAsteroids; i++)
+		{
+			Rock* pRocks = new Rock();
+			Vector2D randomPosition;
+			randomPosition.setBearing(rand() % 628 / 100.0f, rand() % 500 + 500.0f);
+			Vector2D randomVelocity(float(rand() % 600 - 100), float(rand() % 600 - 100));
+			pRocks->initialise(&*pObjectManager, randomPosition, randomVelocity, imageSize);
+			pObjectManager->addObject(pRocks);
+		}
+
 		for (int i = 0; i < numOfMines; i++)
 		{
 			Mines* pMines = new Mines();
@@ -119,6 +130,7 @@ void AsteroidsLevelManager::startLevel()
 			pObjectManager->addObject(pMines);
 		}
 		numOfMines += 4;
+		numOfAsteroids += 8;
 	}
 
 	if (levelNumber == 3)
@@ -132,6 +144,46 @@ void AsteroidsLevelManager::startLevel()
 			pRocks->initialise(&*pObjectManager, randomPosition, randomVelocity, imageSize);
 			pObjectManager->addObject(pRocks);
 		}
+
+		for (int i = 0; i < numOfAsteroids; i++)
+		{
+			Rock* pRocks = new Rock();
+			Vector2D randomPosition;
+			randomPosition.setBearing(rand() % 628 / 100.0f, rand() % 500 + 500.0f);
+			Vector2D randomVelocity(float(rand() % 600 - 100), float(rand() % 600 - 100));
+			pRocks->initialise(&*pObjectManager, randomPosition, randomVelocity, imageSize);
+			pObjectManager->addObject(pRocks);
+		}
+		numOfMines += 8;
+	}
+
+	if (levelNumber == 4)
+	{
+		for (int i = 0; i < numOfAsteroids; i++)
+		{
+			Rock* pRocks = new Rock();
+			Vector2D randomPosition;
+			randomPosition.setBearing(rand() % 628 / 100.0f, rand() % 500 + 500.0f);
+			Vector2D randomVelocity(float(rand() % 600 - 100), float(rand() % 600 - 100));
+			pRocks->initialise(&*pObjectManager, randomPosition, randomVelocity, imageSize);
+			pObjectManager->addObject(pRocks);
+		}
+
+		for (int i = 0; i < numOfMines; i++)
+		{
+			Mines* pMines = new Mines();
+			Vector2D randomPosition;
+			randomPosition.setBearing(rand() % 628 / 100.0f, rand() % 500 + 500.0f);
+			Vector2D randomVelocity(float(rand() % 400 - 100), float(rand() % 400 - 100));
+			pMines->initialise(&*pObjectManager, randomPosition, randomVelocity);
+			pObjectManager->addObject(pMines);
+		}
+	}
+	
+	//This will be the End of the Mini Game
+	if (levelNumber == 5)
+	{
+		//GameWin();
 	}
 }
 

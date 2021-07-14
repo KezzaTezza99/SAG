@@ -1,7 +1,7 @@
 #include "Explosion.h"
 #include "mydrawengine.h"
 #include "ObjectManager.h"
-#include "Player.h"
+#include "AsteroidPlayer.h"
 #include "Rock.h"
 #include "Mines.h"
 

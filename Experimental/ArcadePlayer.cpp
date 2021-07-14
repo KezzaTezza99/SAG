@@ -1,10 +1,13 @@
 #include "ArcadePlayer.h"
 #include "myinputs.h"
-#include "ArcadeMachine.h"
+#include "AsteroidArcadeMachine.h"
+#include "SpaceInvadersArcadeMachine.h"
 
 //TODO FIX MEMORY LEAKS
 //FIX LEVEL MANAGER AND THE ARCADE MACHINE 
-//Game manager creates arcade level and arcade player?
+//Game manager creates arcade level and arcade AsteroidPlayer?
+//--------------------------------------------------------------------
+//Make Other Arcade Machines Dissapear 
 
 const float cAcceleration = 200.0f;	
 const float cFriction = 0.5f;
@@ -65,9 +68,12 @@ IShape2D& ArcadePlayer::GetShape()
 
 void ArcadePlayer::HandleCollision(GameObject& other)
 {
-	if (typeid(other) == typeid(ArcadeMachine))
+	if (typeid(other) == typeid(AsteroidArcadeMachine) || typeid(other) == typeid(SpaceInvadersArcadeMachine))
 	{
+		//Sets itself to Deactive to be removed from the game 
 		Deactivate();
+		//Sets the Game Manager to Deactive so it can also be removed from the game 
+		//No longer needed once the Specific Level Manager is created
 		pGameManager->Deactivate();
 	}
 }
