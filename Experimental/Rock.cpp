@@ -25,10 +25,7 @@ Rock::Rock()
 	this->pObjectManager = pObjectManager;
 }
 
-Rock::~Rock()
-{
-
-}
+Rock::~Rock() {}
 
 void Rock::initialise(ObjectManager* pObjectManager, Vector2D startPosition, Vector2D startVelocity, float imageSize)
 {

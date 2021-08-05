@@ -6,6 +6,8 @@
 #include "AsteroidPlayer.h"
 #include "Mines.h"
 #include "AsteroidArcadeMachine.h"
+#include "gamecode.h"
+#include "myinputs.h"
 
 /*
 		//THIS CREATES A PATTERN SUCH AS A WALL
@@ -33,15 +35,68 @@ AsteroidsLevelManager::AsteroidsLevelManager()
 	score = 0;
 
 	this->pObjectManager = pObjectManager;
+	this->pLevelManager = pLevelManager;
+	size = 1.0f;
 
 	//Getting rid of the warning for not initilizing a member variable
 	m_ThePlayer = nullptr;	
 	m_pTheAsteroids = nullptr;
 }
 
-AsteroidsLevelManager::~AsteroidsLevelManager()
+AsteroidsLevelManager::~AsteroidsLevelManager() {}
+
+void AsteroidsLevelManager::render()
 {
+	//MyDrawEngine::GetInstance()->WriteText(20, 50, (L"RENDER TEST"), MyDrawEngine::RED);
+	MyDrawEngine::GetInstance()->WriteText(20, 100, (L"Level "), MyDrawEngine::GREEN);
+	MyDrawEngine::GetInstance()->WriteInt(80, 100, levelNumber, MyDrawEngine::GREEN);
 }
+
+void AsteroidsLevelManager::initialise(ObjectManager* pObjectManager, AsteroidsLevelManager* pLevelManager)
+{
+	levelNumber = 0;
+	nextRoundTimer = 15.00f;	//Enemy Ship
+	endGameTime = 30.00f;
+	numOfAsteroids = 2;
+	numOfShips = 1;
+	numOfMines = 2;
+
+	this->pObjectManager = pObjectManager;
+	this->pLevelManager = pLevelManager;
+	size = 1.0f;
+	startLevel();
+}
+
+void AsteroidsLevelManager::update(float frameTime)
+{
+	nextRoundTimer -= frameTime;
+
+	if (levelNumber == 1 && nextRoundTimer <= 0.00f)
+	{
+		startLevel();
+		nextRoundTimer = 5.00f;
+	}
+
+	if (levelNumber == 2 && nextRoundTimer <= 0.00f)
+	{
+		GameOver();
+		//nextRoundTimer = 5.00f;
+	}
+
+	if (levelNumber == 3 && nextRoundTimer <= 0.00f)
+	{
+		startLevel();
+		nextRoundTimer = 5.00f;
+	}
+}
+
+IShape2D& AsteroidsLevelManager::GetShape()
+{
+	return collisionShape;
+}
+
+void AsteroidsLevelManager::HandleCollision(GameObject& other) {}
+void AsteroidsLevelManager::DrawCollision() {}
 
 void AsteroidsLevelManager::startLevel()
 {
@@ -50,17 +105,6 @@ void AsteroidsLevelManager::startLevel()
 	levelNumber++;
 	if (levelNumber == 1)
 	{
-		////Making the Ships spawn in a Random Position
-		//Vector2D randomPosition;
-		//randomPosition.setBearing(rand() % 1000 / 100.0f, rand() % 1000 + 1000.0f);
-		//EnemyShip* pShip = new EnemyShip();
-		//pShip->initialise(&*pObjectManager, &*pThePlayer, randomPosition);
-		//pObjectManager->addObject(pShip);
-
-		//this->m_ThePlayer = pThePlayer;		//Seems to fix the issue with the enemies always going to 0,0
-												//Think I was sending a NULLPTR too the enemy somehow 
-												//Also allows me to have access too the AsteroidPlayer in any function
-
 		////Adding the Asteroids
 		for (int i = 0; i < numOfAsteroids; i++)
 		{
@@ -84,6 +128,18 @@ void AsteroidsLevelManager::startLevel()
 
 		this->m_ThePlayer = pThePlayer;
 
+		//Adding Enemy Ship
+		//Making the Ships spawn in a Random Position
+		Vector2D randomPosition;
+		randomPosition.setBearing(rand() % 1000 / 100.0f, rand() % 1000 + 1000.0f);
+		EnemyShip* pShip = new EnemyShip();
+		pShip->initialise(&*pObjectManager, &*pThePlayer, randomPosition);
+		pObjectManager->addObject(pShip);
+
+		this->m_ThePlayer = pThePlayer;			//Seems to fix the issue with the enemies always going to 0,0
+												//Think I was sending a NULLPTR too the enemy somehow 
+												//Also allows me to have access too the AsteroidPlayer in any function
+
 		//Adding Stars
 		for (int i = 0; i < 20; i++)
 		{
@@ -101,7 +157,7 @@ void AsteroidsLevelManager::startLevel()
 			Vector2D randomPosition;
 			randomPosition.setBearing(rand() % 628 / 100.0f, rand() % 500 + 500.0f);
 			Vector2D randomVelocity(float(rand() % 500 - 100), float(rand() % 500 - 100));
-			pMines->initialise(&*pObjectManager, randomPosition, randomVelocity);
+			pMines->initialise(&*pObjectManager, &*pLevelManager, randomPosition, randomVelocity);
 			pObjectManager->addObject(pMines);
 		}
 		numOfMines += 2;
@@ -126,7 +182,7 @@ void AsteroidsLevelManager::startLevel()
 			Vector2D randomPosition;
 			randomPosition.setBearing(rand() % 628 / 100.0f, rand() % 500 + 500.0f);
 			Vector2D randomVelocity(float(rand() % 400 - 100), float(rand() % 400 - 100));
-			pMines->initialise(&*pObjectManager, randomPosition, randomVelocity);
+			pMines->initialise(&*pObjectManager, &*pLevelManager, randomPosition, randomVelocity);
 			pObjectManager->addObject(pMines);
 		}
 		numOfMines += 4;
@@ -144,16 +200,7 @@ void AsteroidsLevelManager::startLevel()
 			pRocks->initialise(&*pObjectManager, randomPosition, randomVelocity, imageSize);
 			pObjectManager->addObject(pRocks);
 		}
-
-		for (int i = 0; i < numOfAsteroids; i++)
-		{
-			Rock* pRocks = new Rock();
-			Vector2D randomPosition;
-			randomPosition.setBearing(rand() % 628 / 100.0f, rand() % 500 + 500.0f);
-			Vector2D randomVelocity(float(rand() % 600 - 100), float(rand() % 600 - 100));
-			pRocks->initialise(&*pObjectManager, randomPosition, randomVelocity, imageSize);
-			pObjectManager->addObject(pRocks);
-		}
+		//Add minmes
 		numOfMines += 8;
 	}
 
@@ -175,11 +222,11 @@ void AsteroidsLevelManager::startLevel()
 			Vector2D randomPosition;
 			randomPosition.setBearing(rand() % 628 / 100.0f, rand() % 500 + 500.0f);
 			Vector2D randomVelocity(float(rand() % 400 - 100), float(rand() % 400 - 100));
-			pMines->initialise(&*pObjectManager, randomPosition, randomVelocity);
+			pMines->initialise(&*pObjectManager, &*pLevelManager, randomPosition, randomVelocity);
 			pObjectManager->addObject(pMines);
 		}
 	}
-	
+
 	//This will be the End of the Mini Game
 	if (levelNumber == 5)
 	{
@@ -187,70 +234,31 @@ void AsteroidsLevelManager::startLevel()
 	}
 }
 
-void AsteroidsLevelManager::render()
+void AsteroidsLevelManager::enemyDead(std::wstring typeOfEnemy)
 {
-	//MyDrawEngine::GetInstance()->WriteText(20, 50, (L"RENDER TEST"), MyDrawEngine::RED);
-	MyDrawEngine::GetInstance()->WriteText(20, 100, (L"Level "), MyDrawEngine::GREEN);
-	MyDrawEngine::GetInstance()->WriteInt(80, 100, levelNumber, MyDrawEngine::GREEN);
-}
-
-void AsteroidsLevelManager::initialise(ObjectManager* pObjectManager)
-{
-	levelNumber = 0;
-	nextRoundTimer = 60.00f;	//Enemy Ship
-	endGameTime = 30.00f;
-	numOfAsteroids = 2;
-	numOfShips = 1;
-	numOfMines = 2;
-
-	this->pObjectManager = pObjectManager;
-	startLevel();
-}
-
-void AsteroidsLevelManager::update(float frameTime)
-{
-	nextRoundTimer -= frameTime;
-
-	if (levelNumber == 1 && nextRoundTimer <= 0.00f)
+	if (typeOfEnemy == L"Asteroid")
 	{
-		startLevel();
-		nextRoundTimer = 5.00f;
+		score = score + 2;
 	}
 
-	if (levelNumber == 2 && nextRoundTimer <= 0.00f)
+	if (typeOfEnemy == L"Mine")
 	{
-		startLevel();
-		nextRoundTimer = 5.00f;
-	}
-
-	if (levelNumber == 3 && nextRoundTimer <= 0.00f)
-	{
-		startLevel();
-		nextRoundTimer = 5.00f;
+		numOfMines--;
+		score = score + 2;
 	}
 }
 
-IShape2D& AsteroidsLevelManager::GetShape()
-{
-	return collisionShape;
-}
-
-void AsteroidsLevelManager::HandleCollision(GameObject& other)
+void AsteroidsLevelManager::GameWon()
 {
 
 }
 
-void AsteroidsLevelManager::DrawCollision()
+void AsteroidsLevelManager::GameOver()
 {
-
-}
-
-void AsteroidsLevelManager::enemyDead()
-{
-	score++;
-}
-
-void AsteroidsLevelManager::playerDead()
-{
-	
+	MyDrawEngine::GetInstance()->ClearBackBuffer();
+	MyDrawEngine::GetInstance()->WriteText(Vector2D(-20, 0), L"GAME OVER", MyDrawEngine::RED);
+	//Displaying Score for Debugging Purposes
+	MyDrawEngine::GetInstance()->WriteInt(20, 140, score, MyDrawEngine::GREEN);
+	//After certain time take them back to Main Menu automatically?
+	//Game::instance.MainMenu();
 }

@@ -6,13 +6,12 @@ class GameObject
 {
 private:
 	PictureIndex image;
-	
 protected:
 	Vector2D position;
 	float angle;
 	bool isActive;
 	float imageSize;
-
+	Rectangle2D playingArea;
 public:
 	GameObject();
 	~GameObject();
@@ -27,5 +26,7 @@ public:
 	void SetImageSize(float size);
 	float GetImageSize() const;
 	void WrapScreen();
+	void Deactivate();
+	int DisplayScore();
 };
 

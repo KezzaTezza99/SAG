@@ -12,27 +12,29 @@ private:
 	float nextRoundTimer;
 	float endGameTime;
 	int numOfAsteroids;
-	int numOfShips; 
+	int numOfShips;				//Enemy Ships 
 	int numOfMines;
 	int score;
 	Vector2D randomPosition;	//Creating a random position vector for Enemy Ships to Spawn
 	Circle2D collisionShape;	
 	ObjectManager* pObjectManager;
-	
+	AsteroidsLevelManager* pLevelManager;
 	//Need access to these variables outside off their scope when created
 	AsteroidPlayer* m_ThePlayer;
 	Rock* m_pTheAsteroids;
+	float size;						//Used to give player a higher score for destroying smaller asteroids
 
 public:
 	AsteroidsLevelManager();
 	~AsteroidsLevelManager();
-	void startLevel();
 	void render();
-	void initialise(ObjectManager* pObjectManager);
+	void initialise(ObjectManager* pObjectManager, AsteroidsLevelManager* pLevelManager);
 	void update(float frameTime);
 	IShape2D& GetShape();
 	void HandleCollision(GameObject& other);
-	void DrawCollision();	//Used for debugging while messing with Collisions 
-	void enemyDead();
-	void playerDead();
+	void DrawCollision();	//Used for debugging while messing with Collisions
+	void startLevel();
+	void enemyDead(std::wstring typeOfEnemy);
+	void GameWon();
+	void GameOver();
 };

@@ -9,6 +9,10 @@ GameObject::GameObject()
 	position.set(0, 0);
 	isActive = true;
 	imageSize = 1.0f;
+
+	//Getting Dimensions of Screen to be used for a few reasons
+	//Wrapping screen and keep text etc in same location no matter on the users' screen
+	playingArea = MyDrawEngine::GetInstance()->GetViewport();
 }
 
 GameObject::~GameObject()
@@ -31,14 +35,11 @@ bool GameObject::checkIfActive() const
 	return isActive;
 }
 
-void GameObject::DrawCollision()
-{
-
-}
+void GameObject::DrawCollision() {}
 
 Vector2D GameObject::getPosition()
 {
-	return Vector2D();
+	return position;
 }
 
 void GameObject::SetImageSize(float size)
@@ -54,30 +55,35 @@ float GameObject::GetImageSize() const
 void GameObject::WrapScreen()
 {
 	//Wrapping the AsteroidPlayer around the screen
-	//Getting Dimensions of Screen
-	Rectangle2D userScreen = MyDrawEngine::GetInstance()->GetViewport();
 
 	//Up and Down
-	if (position.YValue > userScreen.GetTopLeft().YValue + 40)			//Now off top of screen
+	if (position.YValue > playingArea.GetTopLeft().YValue + 40)			//Now off top of screen
 	{
 		//Setting position to be bottom of screen
-		position.YValue = userScreen.GetBottomRight().YValue - 40;
+		position.YValue = playingArea.GetBottomRight().YValue - 40;
 	}
-	if (position.YValue < userScreen.GetBottomRight().YValue - 40)		//Now off bottom of screen
+	if (position.YValue < playingArea.GetBottomRight().YValue - 40)		//Now off bottom of screen
 	{
 		//Setting position to be top of screen
-		position.YValue = userScreen.GetTopLeft().YValue + 40;
+		position.YValue = playingArea.GetTopLeft().YValue + 40;
 	}
 	//Left and Right
-	if (position.XValue > userScreen.GetBottomRight().XValue + 40)
+	if (position.XValue > playingArea.GetBottomRight().XValue + 40)
 	{
-		position.XValue = userScreen.GetTopLeft().XValue - 40;
+		position.XValue = playingArea.GetTopLeft().XValue - 40;
 	}
-	if (position.XValue < userScreen.GetTopLeft().XValue - 40)
+	if (position.XValue < playingArea.GetTopLeft().XValue - 40)
 	{
-		position.XValue = userScreen.GetBottomRight().XValue + 40;
+		position.XValue = playingArea.GetBottomRight().XValue + 40;
 	}
 }
+
+void GameObject::Deactivate()
+{
+	isActive = false;
+}
+
+
 
 
 

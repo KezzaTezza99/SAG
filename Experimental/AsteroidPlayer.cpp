@@ -28,7 +28,6 @@ AsteroidPlayer::AsteroidPlayer()
 
 AsteroidPlayer::~AsteroidPlayer()
 {
-
 }
 
 void AsteroidPlayer::initialise(ObjectManager* pObjectManager, Rock* pAsteroids)
@@ -50,6 +49,9 @@ void AsteroidPlayer::update(float frameTime)
 	//Allowing the AsteroidPlayer to move endlessly 
 	//MyDrawEngine::GetInstance()->theCamera.PlaceAt(Vector2D(position.XValue + 0.0f, -position.YValue + 0.0f));
 	WrapScreen();
+
+	//Keep getting the Asteroids size? May fix the occusional small rock killing me
+	pAsteroids->GetImageSize();
 
 	MyInputs* pInputs = MyInputs::GetInstance();
 	pInputs->SampleKeyboard();
@@ -111,23 +113,26 @@ void AsteroidPlayer::HandleCollision(GameObject& other)
 	//Otherwise rock will bounce off / collide with AsteroidPlayer
 	if (typeid(other) == typeid(Rock))
 	{
-		//Get The Size
-		GetAsteroidSize();
-		if(RockImageSize == 1.0f)
+		if (pAsteroids)
 		{
-			isActive = false;
-			Explosion* pExplosion = new Explosion();
-			pExplosion->initialise(position);
-			pObjectManager->addObject(pExplosion);
-		}
-		else
-		{
-			//Creating a Vector for the Normal
-			Vector2D normal = (position - other.getPosition()).unitVector();
-			if (normal * velocity < 0)
+			//Get The Size
+			/*GetAsteroidSize()*/
+			if (pAsteroids->GetImageSize() == 1.0f)
 			{
-				velocity = velocity - 2 * (velocity * normal) * normal;
-				velocity = velocity * 0.6f;
+				isActive = false;
+				Explosion* pExplosion = new Explosion();
+				pExplosion->initialise(position);
+				pObjectManager->addObject(pExplosion);
+			}
+			else
+			{
+				//Creating a Vector for the Normal
+				Vector2D normal = (position - other.getPosition()).unitVector();
+				if (normal * velocity < 0)
+				{
+					velocity = velocity - 2 * (velocity * normal) * normal;
+					velocity = velocity * 0.6f;
+				}
 			}
 		}
 	}
@@ -167,10 +172,4 @@ bool AsteroidPlayer::isDead() const
 float AsteroidPlayer::getAngle()
 {
 	return angle;
-}
-
-float AsteroidPlayer::GetAsteroidSize()
-{
-	RockImageSize = pAsteroids->GetImageSize();
-	return RockImageSize;
 }

@@ -28,7 +28,6 @@ public:
 	Vector2D getPosition();
 	bool isDead() const;
 	float getAngle();
-	float GetAsteroidSize();
 };
 
 

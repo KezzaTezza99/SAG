@@ -3,12 +3,6 @@
 #include "AsteroidArcadeMachine.h"
 #include "SpaceInvadersArcadeMachine.h"
 
-//TODO FIX MEMORY LEAKS
-//FIX LEVEL MANAGER AND THE ARCADE MACHINE 
-//Game manager creates arcade level and arcade AsteroidPlayer?
-//--------------------------------------------------------------------
-//Make Other Arcade Machines Dissapear 
-
 const float cAcceleration = 200.0f;	
 const float cFriction = 0.5f;
 const float cTurnSpeed = 1.0f;
@@ -16,17 +10,18 @@ const float cTurnSpeed = 1.0f;
 ArcadePlayer::ArcadePlayer()
 {
 	this->pGameManager = pGameManager;
+	this->pAsteroids = pAsteroids;
+	this->pSpaceInvaders = pSpaceInvaders;
     position.set(0, 0);
 }
 
-ArcadePlayer::~ArcadePlayer()
-{
-}
+ArcadePlayer::~ArcadePlayer() {}
 
-void ArcadePlayer::initialise(GameManager* pGameManager)
+void ArcadePlayer::initialise(GameManager* pGameManager, AsteroidArcadeMachine* pAsteroids, SpaceInvadersArcadeMachine* pSpaceInvaders)
 {
 	this->pGameManager = pGameManager;
-
+	this->pAsteroids = pAsteroids;
+	this-> pSpaceInvaders = pSpaceInvaders;
     position.set(0, 0);
     velocity.set(0, 0);
 	LoadImage(L"enemy.bmp");
@@ -68,22 +63,27 @@ IShape2D& ArcadePlayer::GetShape()
 
 void ArcadePlayer::HandleCollision(GameObject& other)
 {
-	if (typeid(other) == typeid(AsteroidArcadeMachine) || typeid(other) == typeid(SpaceInvadersArcadeMachine))
+	if (typeid(other) == typeid(AsteroidArcadeMachine))
 	{
-		//Sets itself to Deactive to be removed from the game 
+		//Sets itself to Deactive to be removed from the game
 		Deactivate();
 		//Sets the Game Manager to Deactive so it can also be removed from the game 
 		//No longer needed once the Specific Level Manager is created
 		pGameManager->Deactivate();
+		//As player selected Asteroids need to Delete Space Invaders
+		pSpaceInvaders->Deactivate();
+	}
+
+	if (typeid(other) == typeid(SpaceInvadersArcadeMachine))
+	{
+		//Doing same as above but deleting Asteroids as Player chose Space Invaders
+		Deactivate();
+		pGameManager->Deactivate();
+		pAsteroids->Deactivate();
 	}
 }
 
 void ArcadePlayer::DrawCollision()
 {
     MyDrawEngine::GetInstance()->FillCircle(collisionShape.GetCentre(), collisionShape.GetRadius(), MyDrawEngine::LIGHTGREEN);
-}
-
-void ArcadePlayer::Deactivate()
-{
-	isActive = false;
 }

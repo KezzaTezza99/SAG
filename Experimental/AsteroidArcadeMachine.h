@@ -21,5 +21,4 @@ public:
 	void HandleCollision(GameObject& other);
 	void DrawCollision();
 	void SetActivity();
-	void Deactivate();
 };

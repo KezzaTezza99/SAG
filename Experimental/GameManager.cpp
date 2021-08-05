@@ -9,37 +9,27 @@
 GameManager::GameManager()
 {
     this->pObjectManager = pObjectManager;
-    this->pGameManager = pGameManager;
 }
 
-GameManager::~GameManager()
-{
-}
+GameManager::~GameManager() {}
 
-void GameManager::initialise(ObjectManager* pObjectManager, GameManager* pGameManager)
+void GameManager::initialise(ObjectManager* pObjectManager)
 {
     this->pObjectManager = pObjectManager;
-    this->pGameManager = pGameManager;
     
     //Initiliase's the Game to Arcade Mode by Creating the Mini Game's
-    //Both objects need to know about each other otherwise 
-    //starting one mini game leaves the other in the scene
-    //player will delete the game manager also. Could stay in scene but want to do clean up
-    //making player do this decouples slightly orignal version everyone could do it
-
     AsteroidArcadeMachine* pAsteroids = new AsteroidArcadeMachine();
-    //Initialising and Adding the Asteroids Mini Game here so I can pass in SpaceInvaders alsp
     pAsteroids->initialise(&*pObjectManager);
     pObjectManager->addObject(pAsteroids);
 
     SpaceInvadersArcadeMachine* pSpaceInvaders = new SpaceInvadersArcadeMachine();
-    pSpaceInvaders->initialise(&*pObjectManager, &*pAsteroids);
+    pSpaceInvaders->initialise(&*pObjectManager);
     pObjectManager->addObject(pSpaceInvaders);
 
-  
     //Initiliase the Arcade Player
     ArcadePlayer* pArcadePlayer = new ArcadePlayer();
-    pArcadePlayer->initialise(&*pGameManager);          //Needs to delete the Game Manager
+    //Player is responsible for deleting the Game Manager and the Mini Games
+    pArcadePlayer->initialise(this, &*pAsteroids, &*pSpaceInvaders);
     pObjectManager->addObject(pArcadePlayer);
 }
 
@@ -60,9 +50,4 @@ IShape2D& GameManager::GetShape()
 
 void GameManager::HandleCollision(GameObject& other)
 {
-}
-
-void GameManager::Deactivate()
-{
-    isActive = false;
 }

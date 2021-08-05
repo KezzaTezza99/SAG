@@ -30,7 +30,7 @@ void AsteroidArcadeMachine::update(float frameTime)
     {
         //Adding Asteroid Level Manager
         AsteroidsLevelManager* pLevelManager = new AsteroidsLevelManager();
-        pLevelManager->initialise(&*pObjectManager);
+        pLevelManager->initialise(&*pObjectManager, &*pLevelManager);       //Passing self to give to other Entities
         pObjectManager->addObject(pLevelManager);
 
         //Delete the Asteroids Arcade Machine
@@ -51,7 +51,7 @@ void AsteroidArcadeMachine::HandleCollision(GameObject& other)
     //Start Mini Game
     if (typeid(other) == typeid(ArcadePlayer))
     {
-        startMiniGame = true;
+        startMiniGame = true; 
     }
 }
 
@@ -61,11 +61,6 @@ void AsteroidArcadeMachine::DrawCollision()
 }
 
 void AsteroidArcadeMachine::SetActivity()
-{
-    isActive = false;
-}
-
-void AsteroidArcadeMachine::Deactivate()
 {
     isActive = false;
 }

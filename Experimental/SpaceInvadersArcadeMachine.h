@@ -12,15 +12,14 @@ private:
 	ObjectManager* pObjectManager;
 	Circle2D collisionShape;
 	bool startSpaceInvaders;
-	AsteroidArcadeMachine* pAsteroids;
+	//AsteroidArcadeMachine* pAsteroids;
 public:
 	SpaceInvadersArcadeMachine();
 	~SpaceInvadersArcadeMachine();
-	void initialise(ObjectManager* pObjectManager, AsteroidArcadeMachine* pAsteroids);
+	void initialise(ObjectManager* pObjectManager);
 	void update(float frameTime);
 	IShape2D& GetShape();
 	void HandleCollision(GameObject& other);
 	void DrawCollision();
-	void Deactivate();
 };
 

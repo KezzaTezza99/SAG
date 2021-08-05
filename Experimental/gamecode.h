@@ -42,6 +42,7 @@ private:
 
 	GameTimer gt;
 	ObjectManager objectManager;
+
 public:
 	static Game instance;          // Singleton instance
 

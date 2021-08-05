@@ -11,6 +11,7 @@
 #include "AsteroidArcadeMachine.h"
 #include "GameManager.h"
 #include "ArcadePlayer.h"
+#include "EndGameMenu.h"
 
 Game::Game()
 {
@@ -295,23 +296,17 @@ ErrorType Game::StartOfGame()
 {
    // Code to set up your game *********************************************
    // **********************************************************************
-
-	gt.mark();
-	gt.mark();
-
 	//Creating a Seed to Ensure Random Number Generation is always Random 
 	srand(unsigned int(time(NULL)));	//If this isnt here random number will always produce the same value
-
-	////Adding Level Manager
-	//AsteroidsLevelManager* pLevelManager = new AsteroidsLevelManager();
-	//pLevelManager->initialise(&objectManager, L"Asteroids");
-	//objectManager.addObject(pLevelManager);
+	
+	gt.mark();
+	gt.mark();
 
 	//Adding Game Manager which will start the Arcade Game and Level Manager
 	//It will then be deleted, when the user choses a mini game the level manager will then be deleted.
 	//Will create a new Level Manager based on the Mini Game
 	GameManager* pGameManager = new GameManager();
-	pGameManager->initialise(&objectManager, &*pGameManager);		//Need to pass itself for deleting
+	pGameManager->initialise(&objectManager);		
 	objectManager.addObject(pGameManager);
 
 	return SUCCESS;

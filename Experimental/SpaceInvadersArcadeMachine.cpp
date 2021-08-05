@@ -5,20 +5,17 @@
 SpaceInvadersArcadeMachine::SpaceInvadersArcadeMachine()
 {
     this->pObjectManager = pObjectManager;
-    this->pAsteroids = pAsteroids;
-
+    //this->pAsteroids = pAsteroids;
     position.set(0, 0);
     startSpaceInvaders = false;
 }
 
-SpaceInvadersArcadeMachine::~SpaceInvadersArcadeMachine()
-{
-}
+SpaceInvadersArcadeMachine::~SpaceInvadersArcadeMachine() {}
 
-void SpaceInvadersArcadeMachine::initialise(ObjectManager* pObjectManager, AsteroidArcadeMachine* pAsteroids)
+void SpaceInvadersArcadeMachine::initialise(ObjectManager* pObjectManager)
 {
     this->pObjectManager = pObjectManager;
-    this->pAsteroids = pAsteroids;
+    //this->pAsteroids = pAsteroids;
 
     position.set(300, 300);
     startSpaceInvaders = false;
@@ -37,7 +34,7 @@ void SpaceInvadersArcadeMachine::update(float frameTime)
         //Delete the Space Invader Arcade Machine
         Deactivate();
         //Delete the Asteroids Arcade Machine
-        pAsteroids->Deactivate();
+        //pAsteroids->Deactivate();
     }
 }
 
@@ -58,9 +55,4 @@ void SpaceInvadersArcadeMachine::HandleCollision(GameObject& other)
 void SpaceInvadersArcadeMachine::DrawCollision()
 {
     MyDrawEngine::GetInstance()->FillCircle(collisionShape.GetCentre(), collisionShape.GetRadius(), MyDrawEngine::LIGHTGREEN);
-}
-
-void SpaceInvadersArcadeMachine::Deactivate()
-{
-    isActive = false;
 }

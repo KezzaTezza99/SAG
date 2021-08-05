@@ -2,6 +2,7 @@
 #include "Rock.h"
 #include "EnemyShip.h"
 #include "Mines.h"
+#include "AsteroidPlayer.h"
 
 Bullet::Bullet()
 {
@@ -24,6 +25,7 @@ void Bullet::initialise(Vector2D startPosition, Vector2D startVelocity)
 
 void Bullet::update(float frameTime)
 {
+	//Asteroid Bullets will wrap the screen
 	WrapScreen();
 	position = position + velocity * frameTime;
 	lifeTime = lifeTime - frameTime;
@@ -36,7 +38,7 @@ void Bullet::update(float frameTime)
 
 IShape2D& Bullet::GetShape()
 {
-	collisionShape.PlaceAt(position, 6);
+	collisionShape.PlaceAt(position, 4);
 	return collisionShape;
 }
 
@@ -50,15 +52,8 @@ void Bullet::DrawCollision()
 
 void Bullet::HandleCollision(GameObject& other)
 {
-	if (typeid(other) == typeid(Rock))
-	{
-		isActive = false;
-	}
-	if (typeid(other) == typeid(EnemyShip))
-	{
-		isActive = false;
-	}
-	if (typeid(other) == typeid(Mines))
+	if (typeid(other) == typeid(Rock) || typeid(other) == typeid(EnemyShip) 
+		|| typeid(other) == typeid(Mines) || typeid(other) == typeid(AsteroidPlayer))
 	{
 		isActive = false;
 	}

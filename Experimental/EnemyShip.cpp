@@ -7,17 +7,15 @@
 #include "Explosion.h"
 #include "vector2D.h"
 
-const float cAcceleration = 100.0f;
-//const float cGravity = 250.0f;	
 const float cFriction = 0.5f;
-const float cTurnSpeed = 0.8f;
-const float BULLETSPEED = 400.0f;
+const float BULLETSPEED = 600.0f;
 
 EnemyShip::EnemyShip()
 {
 	velocity.set(0, 0);
 	angle = 0;
 	shootDelay = 0;
+	countDown = 0;
 
 	this->pObjectManager = pObjectManager;	//This is here to stop a warning i was getting with not initilazing member variables
 	this->pThePlayer = pThePlayer;
@@ -31,7 +29,6 @@ EnemyShip::~EnemyShip()
 void EnemyShip::initialise(ObjectManager* pObjectManager, AsteroidPlayer* pThePlayer, Vector2D randomStartPosition)
 {
 	position = randomStartPosition;
-	currentPosition = position;
 	velocity.set(0, 0);
 	angle = 0;
 	LoadImage(L"enemy.bmp");
@@ -39,109 +36,55 @@ void EnemyShip::initialise(ObjectManager* pObjectManager, AsteroidPlayer* pThePl
 	this->pObjectManager = pObjectManager;
 	this->pThePlayer = pThePlayer;
 	shootDelay = 0;
-
-	wait = 0.2f;
+	countDown = 2;
 }
 
 void EnemyShip::update(float frameTime)
 {
-	////THIS MAKES IT SPIN LIKE CRAZY MAYBE ADD THIS TO THE ASTEROIDS?
-	//double PI = atan(1) * 4;
-	//angle = float(atan2(playerPos.XValue - position.XValue, playerPos.YValue - position.YValue) * (180 / PI));
-	//Vector2D angleVec;
-	//angleVec.set(angle, 0.0001f);
-	//velocity = velocity + angleVec * frameTime;
-	//Vector2D directonOfPlayer = playerPos - position + velocity * frameTime;
-	//position = position + directonOfPlayer * frameTime;
-	
-	////OLD CODE THAT KINDA WORKS -------------------------------------------------------
-	//Vector2D playerAngle = playerPos.unitVector();
-	//Vector2D shipAngle = position.unitVector();
-	//Vector2D angleNeeded = playerAngle - shipAngle;
-	//velocity = velocity - angleNeeded * frameTime;
-	//Vector2D directionOfPlayer = playerPos - position + velocity * frameTime;
-	//position = position + directionOfPlayer * frameTime;
-	////---------------------------------------------------------------------------------
+	//Let Enemy Wrap Screene
+	WrapScreen();
 
-	//ENEMY REPLICATES AsteroidPlayer MOVEMENT
-	//acceleration.setBearing(angle, cAcceleration);
-	//velocity = velocity + acceleration * frameTime;
-	//if (playerAngle <= angle)
-	//{
-	//	angle = angle - cTurnSpeed * frameTime;
-	//}
-
-	//if (playerAngle >= angle)
-	//{
-	//	angle = angle + cTurnSpeed * frameTime;
-	//}
-	//velocity = velocity - velocity * cFriction * frameTime;
-	//position = position + velocity * frameTime;
-	//---------------------------------------------------------
-	 
-	//Vector2D directonOfPlayer = playerPos - position + velocity * frameTime;
-
-	//acceleration.setBearing(angle, cAcceleration);
-	//velocity = velocity + acceleration * frameTime;
-
-	//wait -= frameTime;
-	//
-	//if (angle < playerAngle)
-	//{
-	//	if (wait <= 0.00f)
-	//	{
-	//		angle = angle + cTurnSpeed * frameTime;
-	//		wait = 0.05f;
-	//	}
-	//}
-
-	//if (angle > playerAngle)
-	//{
-	//	if (wait <= 0.00f)
-	//	{
-	//		angle = angle - cTurnSpeed * frameTime;
-	//		wait = 0.05f;
-	//	}
-	//}
-	//velocity = velocity - velocity * cFriction * frameTime;
-	//position = position + directonOfPlayer * frameTime;
-	
-	//FIGURE OUT HOW TO MAKE ENEMY LOOK TOWARDS THE AsteroidPlayer
-	//angle = playerAngle;
-	//angle = (position.angle() - playerPos.angle()) * cTurnSpeed;
-	//Vector2D directonOfPlayer = playerPos - position + velocity * frameTime;
-	//acceleration.setBearing(angle, cAcceleration);
-	//velocity = velocity + acceleration * frameTime;
-	//position = position + directonOfPlayer * frameTime;
-
-	//Only Get the players position if the AsteroidPlayer is Alive
-	//Without the check it crashes 
-	if (pThePlayer->checkIfActive() == true)	//pThePlayer->checkIfActive() still causes issues
+	//Add Physics to movement like player movement?
+	if (pThePlayer->checkIfActive() == true)
 	{
-		getPlayer();
+		//Ship will always move and look towards the Player
+		//When player dies need to stop looking at player because causes null pointer
+		Vector2D PlayerPosition = pThePlayer->getPosition() - position;
+		angle = PlayerPosition.angle();
+		position = position + PlayerPosition * frameTime;
+	}
+	else
+	{
+		//When Player dies slowly slow the enemy down to a stop
+		velocity = velocity - velocity * cFriction * frameTime;
 	}
 
-	// ENEMY SHOOT AsteroidPlayer
-	/*if (shootDelay <= 0)	//Only allowed to shoot when shoot delay is 0
+	//Dont want the enemy to shoot straight away - also fixes issue of enemy killing themselves by 
+	//catching up to the bullet. Could fix this properly? Think the random veloicty given is to fast to start
+	//Enemy Shoots at Asteroid Player
+
+	countDown = countDown - frameTime;
+	if (countDown <= 0 && shootDelay <= 0 && pThePlayer->checkIfActive() == true) 
 	{
 		Bullet* pBullet = new Bullet();
 		if (pBullet)
 		{
 			Vector2D vel;
-			vel.setBearing(playerAngle, BULLETSPEED);
-			Vector2D offset;	//This will make the bullets appear in front of AsteroidPlayer not centre
-			offset.setBearing(playerAngle, 65.0f);
-			pBullet->initialise(position + offset, vel + velocity);
+			vel.setBearing(angle, BULLETSPEED);
+			Vector2D offset;
+			offset.setBearing(angle, 60.0f);
+			pBullet->initialise(position + offset, velocity + vel);
 
 			if (pObjectManager)
 			{
 				pObjectManager->addObject(pBullet);
-				shootDelay = 0.5f;	//Setting to 0.5 every time we have shot one bullet
+				shootDelay = 1.5f;	
+				countDown = 0;
 			}
 		}
 	}
 	//Adding a timer to count down before allowing us to shoot again
-	shootDelay = shootDelay - frameTime; */
+	shootDelay = shootDelay - frameTime;
 }
 
 IShape2D& EnemyShip::GetShape()
@@ -182,22 +125,6 @@ void EnemyShip::DrawCollision()
 Vector2D EnemyShip::getPosition()
 {
 	return position;
-
-	currentPosition = getPosition();
-}
-
-void EnemyShip::getPlayerPosition()
-{
-	
-}
-
-void EnemyShip::getPlayer()
-{
-	if (pThePlayer)
-	{
-		playerPos = pThePlayer->getPosition();
-		playerAngle = pThePlayer->getAngle();
-	}
 }
 
 

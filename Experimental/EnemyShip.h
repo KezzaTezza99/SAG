@@ -11,16 +11,11 @@ class EnemyShip: public GameObject
 private:
 	Vector2D velocity;
 	Vector2D acceleration;
-	Vector2D playerPos;
-	//Vector2D playerPosition;
-	Vector2D currentPosition;
-	//Want the Ship to create bullets to shoot AsteroidPlayer
 	ObjectManager* pObjectManager;
-	float shootDelay;
-	Circle2D collisionShape;
 	AsteroidPlayer* pThePlayer;
-	float playerAngle;
-	float wait;
+	Circle2D collisionShape;
+	float shootDelay;
+	float countDown;
 
 public:
 	EnemyShip();
@@ -31,7 +26,5 @@ public:
 	void HandleCollision(GameObject& other);
 	void DrawCollision();
 	Vector2D getPosition();
-	void getPlayerPosition();
-	void getPlayer();
 };
 

@@ -7,10 +7,12 @@ class SpaceInvaderLevelManager : public GameObject
 private:
 	int levelNumber;
 	int numOfEnemies;
-	int score;
 	Circle2D collisionShape;
 	ObjectManager* pObjectManager;
-
+	Vector2D offset;
+	int score;
+	int playerLives;
+	PictureIndex playerShip;
 	//TODO DEACTIVE ASTEROID IF SPACE INVADER STARTS
 public:
 	SpaceInvaderLevelManager();
@@ -24,5 +26,8 @@ public:
 	void DrawCollision();
 	void enemyDead();
 	void playerDead();
+	void GameOver();
+	int GetScore() const;
+	void DisplayScore();
 };
 
