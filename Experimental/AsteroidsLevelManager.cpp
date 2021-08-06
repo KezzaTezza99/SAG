@@ -47,7 +47,6 @@ AsteroidsLevelManager::~AsteroidsLevelManager() {}
 
 void AsteroidsLevelManager::render()
 {
-	//MyDrawEngine::GetInstance()->WriteText(20, 50, (L"RENDER TEST"), MyDrawEngine::RED);
 	MyDrawEngine::GetInstance()->WriteText(20, 100, (L"Level "), MyDrawEngine::GREEN);
 	MyDrawEngine::GetInstance()->WriteInt(80, 100, levelNumber, MyDrawEngine::GREEN);
 }

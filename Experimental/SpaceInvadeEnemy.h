@@ -11,7 +11,7 @@ private:
 	Circle2D collisionShape;
 	ObjectManager* pObjectManager;
 	Vector2D offset;
-	float shootDelay;
+	float randomShootDelay;
 	SpaceInvaderFormation* pFormation;
 	SpaceInvaderLevelManager* pLevelManager;
 

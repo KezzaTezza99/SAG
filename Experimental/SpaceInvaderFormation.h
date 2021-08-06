@@ -8,6 +8,8 @@ private:
 	int direction;				//0 Left, 1 Right, 2 Left Down, 3 Right Down
 	float downTimer;
 public:
+	SpaceInvaderFormation();
+	~SpaceInvaderFormation();
 	void initialise();
 	void update(float frameTime);
 	void render();					//Overriding this so we render nothing instead of no image

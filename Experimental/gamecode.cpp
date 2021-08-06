@@ -302,6 +302,8 @@ ErrorType Game::StartOfGame()
 	gt.mark();
 	gt.mark();
 
+	framesToFreeze = 0;		//Using this when the Player Dies and Respawns
+
 	//Adding Game Manager which will start the Arcade Game and Level Manager
 	//It will then be deleted, when the user choses a mini game the level manager will then be deleted.
 	//Will create a new Level Manager based on the Mini Game
@@ -339,6 +341,13 @@ ErrorType Game::Update()
    
 	gt.mark();
 
+	//Freezing Game
+	if (framesToFreeze > 0)
+	{
+		gt.mdFrameTime = 0;
+		framesToFreeze--;
+	}
+
 	objectManager.renderAll();
 	objectManager.updateAll(float(gt.mdFrameTime));
 	objectManager.checkAllCollisions();
@@ -365,5 +374,16 @@ ErrorType Game::EndOfGame()
    // *********************************************************************
 	objectManager.deleteAll();
 	return SUCCESS;
+}
+
+void Game::FreezeGame()
+{
+	framesToFreeze = 50;
+}
+
+void Game::StopGame()
+{
+	//Stopping for long time this will happen when player dies and user needs to go back to Main Menu
+	framesToFreeze = 5000;
 }
 

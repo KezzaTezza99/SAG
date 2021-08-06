@@ -62,7 +62,6 @@ void EnemyShip::update(float frameTime)
 	//Dont want the enemy to shoot straight away - also fixes issue of enemy killing themselves by 
 	//catching up to the bullet. Could fix this properly? Think the random veloicty given is to fast to start
 	//Enemy Shoots at Asteroid Player
-
 	countDown = countDown - frameTime;
 	if (countDown <= 0 && shootDelay <= 0 && pThePlayer->checkIfActive() == true) 
 	{

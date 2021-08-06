@@ -1,6 +1,9 @@
 #include "SpaceInvaderPlayer.h"
 #include "myinputs.h"
+#include "SpaceInvaderEnemyBullet.h"
 #include "SpaceInvaderBullet.h"
+
+//Due to having two bullet types it increases cohesion need to fix
 
 const float cAcceleration = 400.0f;
 const float cFriction = -0.5f;
@@ -8,7 +11,7 @@ const float BULLETSPEED = 800.0f;
 
 SpaceInvaderPlayer::SpaceInvaderPlayer()
 {
-    position.set(0, 0);
+    position.set(0, -850);
     velocity.set(0, 0);
 	friction.set(0, 0);
 	shootDelay = 0.0f;
@@ -20,13 +23,13 @@ SpaceInvaderPlayer::~SpaceInvaderPlayer()
 {
 }
 
-void SpaceInvaderPlayer::initialise(ObjectManager* pObjectManager, SpaceInvaderLevelManager* pLevelManager)
+void SpaceInvaderPlayer::initialise(ObjectManager* pObjectManager, SpaceInvaderLevelManager* pLevelManager, Vector2D startPosition)
 {
 	Rectangle2D playingArea = MyDrawEngine::GetInstance()->GetViewport();
 
     this->pObjectManager = pObjectManager;
 	this->pLevelManager = pLevelManager;
-    position.set(0, -850);
+	position.set(startPosition);
     velocity.set(0, 0);
 	friction.set(0, 0);
 	shootDelay = 0.0f;
@@ -82,15 +85,21 @@ void SpaceInvaderPlayer::update(float frameTime)
 
 IShape2D& SpaceInvaderPlayer::GetShape()
 {
-    collisionShape.PlaceAt(position, 50);
+    collisionShape.PlaceAt(position, 60);
     return collisionShape;
 }
 
 void SpaceInvaderPlayer::HandleCollision(GameObject& other)
 {
-	if (typeid(other) == typeid(SpaceInvaderBullet))
+	if (typeid(other) == typeid(SpaceInvaderEnemyBullet))
 	{
+		//Sending last location to Level Manager to Spawn another version at same location
+		pLevelManager->GetPlayerPosition(position);
+		
+		//Deleting Self
 		Deactivate();
+		
+		//Telling the Level Manager player has died 
 		pLevelManager->playerDead();
 	}
 }

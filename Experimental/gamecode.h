@@ -42,6 +42,7 @@ private:
 
 	GameTimer gt;
 	ObjectManager objectManager;
+	int framesToFreeze;
 
 public:
 	static Game instance;          // Singleton instance
@@ -82,6 +83,9 @@ public:
    // but could be done by the gameplay programmer in other situations
    // This will be used by the gameplay programmer to clean up
 	ErrorType EndOfGame();
+
+	void FreezeGame();
+	void StopGame();
 };
 
 

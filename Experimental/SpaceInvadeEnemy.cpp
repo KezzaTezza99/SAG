@@ -1,8 +1,10 @@
 #include "SpaceInvadeEnemy.h"
 #include "SpaceInvaderBullet.h"
+#include "SpaceInvaderEnemyBullet.h"
 #include "gamecode.h"
+#include "Explosion.h"
 
-const float BULLETSPEED = 800.0f;
+const float BULLETSPEED = 600.0f;
 
 SpaceInvadeEnemy::SpaceInvadeEnemy()
 {
@@ -12,7 +14,7 @@ SpaceInvadeEnemy::SpaceInvadeEnemy()
     this->pLevelManager = pLevelManager;
     position.set(0, 0);
     velocity.set(0, 0);
-    shootDelay = 0.0f;
+    randomShootDelay = rand() % 15 + 3.0f;      //3-15 Seconds Enemy Shoots
 }
 
 SpaceInvadeEnemy::~SpaceInvadeEnemy()
@@ -33,34 +35,44 @@ void SpaceInvadeEnemy::initialise(ObjectManager* pObjectManager, Vector2D offset
     //position.set(startingPosition -900, 850);
     velocity.set(200, 0);
     LoadImage(L"enemy.bmp");        //Change This
-    shootDelay = 0.0f;
+    randomShootDelay = rand() % 15 + 3.0f;       //Going to have all enemies randomly shoot over a duration of time
     //Flipping the image 180 degrees to face correct way
     angle = float(3.142);
 }
 
 void SpaceInvadeEnemy::update(float frameTime)
 {
-    position = pFormation->getPosition() + offset;
+    //If Level Manager is not Active delete self 
+    //this will happen when Player dies for third time
+    if (!pLevelManager->checkIfActive())
+        Deactivate();
 
-    ////Enemy always shoots downwards not at player - just easier may change this at later date
-    //if (shootDelay <= 0.0f)
-    //{
-    //    SpaceInvaderBullet* pBullet = new SpaceInvaderBullet();
-    //    if (pBullet)
-    //    {
-    //        Vector2D vel;
-    //        vel.setBearing(angle, BULLETSPEED);
-    //        Vector2D offset;
-    //        offset.setBearing(angle, 60.0f);
-    //        pBullet->initialise(position + offset, vel + velocity);
-    //        if (pObjectManager)
-    //        {
-    //            pObjectManager->addObject(pBullet);
-    //            shootDelay = 1.0f;
-    //        }
-    //    }
-    //}
- 
+    //Movement
+    position = pFormation->getPosition() + offset;
+   
+    //Shooting    
+    if (randomShootDelay <= 0)
+    {
+        SpaceInvaderEnemyBullet* pBullet = new SpaceInvaderEnemyBullet();
+        if (pBullet)
+        {
+            Vector2D vel;
+            vel.setBearing(angle, BULLETSPEED);
+            Vector2D offset;
+            offset.setBearing(angle, 60.0f);
+            pBullet->initialise(position + offset, velocity + vel);
+
+            if (pObjectManager)
+            {
+                pObjectManager->addObject(pBullet);
+                randomShootDelay = rand() % 15 + 3.0f;
+            }
+        }
+    }
+    //Adding a timer to count down before allowing us to shoot again
+    randomShootDelay = randomShootDelay - frameTime;
+
+    //Formation Movement
     //Getting Dimensions of Screen
     Rectangle2D playingArea = MyDrawEngine::GetInstance()->GetViewport();
 
@@ -89,12 +101,15 @@ void SpaceInvadeEnemy::HandleCollision(GameObject& other)
 {
     if (typeid(other) == typeid(SpaceInvaderBullet))
     {
-        //Create Explosion Here
+        //Creating Explosion
+        Explosion* pExplosion = new Explosion();
+        pExplosion->initialise(position);
+        pObjectManager->addObject(pExplosion);
 
         //Deactivating the Enemy
         Deactivate();
 
-        //Increase Score
+        //Increasing Score
         pLevelManager->enemyDead();
     }
 }

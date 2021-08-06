@@ -17,7 +17,7 @@ private:
 public:
 	SpaceInvaderPlayer();
 	~SpaceInvaderPlayer();
-	void initialise(ObjectManager* pObjectManager, SpaceInvaderLevelManager* pLevelManager);
+	void initialise(ObjectManager* pObjectManager, SpaceInvaderLevelManager* pLevelManager, Vector2D startPosition);
 	void update(float frameTime);
 	IShape2D& GetShape();
 	void HandleCollision(GameObject& other);

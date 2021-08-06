@@ -82,10 +82,3 @@ void GameObject::Deactivate()
 {
 	isActive = false;
 }
-
-
-
-
-
-
-

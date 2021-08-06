@@ -15,9 +15,7 @@ SpaceInvaderLevelManager::SpaceInvaderLevelManager()
 	playerShip = MyDrawEngine::GetInstance()->LoadPicture(L"harrasser.bmp");
 }
 
-SpaceInvaderLevelManager::~SpaceInvaderLevelManager()
-{
-}
+SpaceInvaderLevelManager::~SpaceInvaderLevelManager() {}
 
 void SpaceInvaderLevelManager::initialise(ObjectManager* pObjectManager)
 {
@@ -43,9 +41,9 @@ void SpaceInvaderLevelManager::startLevel()
 		//Creating the Player
 		SpaceInvaderPlayer* pPlayer = new SpaceInvaderPlayer();
 		//Object Manager is needed to create bullers - Player needs level manager to track when player dies
-		pPlayer->initialise(&*pObjectManager, this);
+		pPlayer->initialise(&*pObjectManager, this, Vector2D(0, -850));
 		pObjectManager->addObject(pPlayer);
-
+		
 		//Creating the Enemies
 		//Found an issue if there are to many enemies on the X the formation 
 		//movement does not work as intended so maybe different screen sizes could break this
@@ -64,43 +62,92 @@ void SpaceInvaderLevelManager::startLevel()
 		}
 	}
 
-	////Level 2 will have two rows of enemies
-	//if (levelNumber == 2)
-	//{
-	//	for (int row = 0; row < 2; row++)
-	//	{
-	//		for (int i = 0; i < numOfEnemies; i++)
-	//		{
-	//			//Stops Enemies being on top of each other
-	//			int spacing = 200;
-	//			int xPos = i * spacing;
-	//			Vector2D offset;
-	//			offset.set(xPos, row * spacing);
+	//Level 2 will have two rows of enemies
+	if (levelNumber == 2)
+	{
+		numOfEnemies = 28;
+		//When using nested loops for rows / columns I faced an issue of the next level starting when 14 enemies
+		//killed or another issue with 28 enemies in each row so instead doing it a longer way
+		//Will come back and try fixing but I know this works and have time constraints 
+		for (int i = 0; i < numOfEnemies / 2; i++)
+		{
+			int spacing = 200;
+			int xPos = i * spacing;
+			Vector2D offset;
+			offset.set(float(xPos), 0);
 
-	//			SpaceInvadeEnemy* pEnemies = new SpaceInvadeEnemy();
-	//			pEnemies->initialise(&*pObjectManager, offset, &*pFormation);
-	//			pObjectManager->addObject(pEnemies);
-	//		}
-	//	}
-	//}
+			SpaceInvadeEnemy* pEnemies = new SpaceInvadeEnemy();
+			pEnemies->initialise(&*pObjectManager, offset, &*pFormation, this);
+			pObjectManager->addObject(pEnemies);
+		}
 
-	////Level 3 will have three rows of enemies
-	//if (levelNumber == 3)
-	//{
-	//	for (int i = 0; i < numOfEnemies; i++)
-	//	{
-	//		for (int row = 1; row < 3; row++)
-	//		{
-	//			//Stops Enemies being on top of each other
-	//			int spacing = 200;
-	//			int xPos = i * spacing;
-	//			offset.set(i * spacing, row * spacing);
-	//		}
-	//		SpaceInvadeEnemy* pEnemies = new SpaceInvadeEnemy();
-	//		pEnemies->initialise(&*pObjectManager, offset, &*pFormation);
-	//		pObjectManager->addObject(pEnemies);
-	//	}
-	//}
+		for (int i = 0; i < numOfEnemies / 2; i++)
+		{
+			int spacing = 200;
+			int xPos = i * spacing;
+			Vector2D offset;
+			offset.set(float(xPos), 200);
+
+			SpaceInvadeEnemy* pEnemies = new SpaceInvadeEnemy();
+			pEnemies->initialise(&*pObjectManager, offset, &*pFormation, this);
+			pObjectManager->addObject(pEnemies);
+		}
+	}
+
+	//Level 3 will have 4 rows of enemies
+	if (levelNumber == 3)
+	{
+		numOfEnemies = 56;
+		//When using nested loops for rows / columns I faced an issue of the next level starting when 14 enemies
+		//killed or another issue with 28 enemies in each row so instead doing it a longer way
+		for (int i = 0; i < numOfEnemies / 4; i++)
+		{
+			int spacing = 200;
+			int xPos = i * spacing;
+			Vector2D offset;
+			offset.set(float(xPos), 0);
+
+			SpaceInvadeEnemy* pEnemies = new SpaceInvadeEnemy();
+			pEnemies->initialise(&*pObjectManager, offset, &*pFormation, this);
+			pObjectManager->addObject(pEnemies);
+		}
+
+		for (int i = 0; i < numOfEnemies / 4; i++)
+		{
+			int spacing = 200;
+			int xPos = i * spacing;
+			Vector2D offset;
+			offset.set(float(xPos), 200);
+
+			SpaceInvadeEnemy* pEnemies = new SpaceInvadeEnemy();
+			pEnemies->initialise(&*pObjectManager, offset, &*pFormation, this);
+			pObjectManager->addObject(pEnemies);
+		}
+
+		for (int i = 0; i < numOfEnemies / 4; i++)
+		{
+			int spacing = 200;
+			int xPos = i * spacing;
+			Vector2D offset;
+			offset.set(float(xPos), 400);
+
+			SpaceInvadeEnemy* pEnemies = new SpaceInvadeEnemy();
+			pEnemies->initialise(&*pObjectManager, offset, &*pFormation, this);
+			pObjectManager->addObject(pEnemies);
+		}
+
+		for (int i = 0; i < numOfEnemies / 4; i++)
+		{
+			int spacing = 200;
+			int xPos = i * spacing;
+			Vector2D offset;
+			offset.set(float(xPos), 600);
+
+			SpaceInvadeEnemy* pEnemies = new SpaceInvadeEnemy();
+			pEnemies->initialise(&*pObjectManager, offset, &*pFormation, this);
+			pObjectManager->addObject(pEnemies);
+		}
+	}
 }
 
 void SpaceInvaderLevelManager::update(float frameTime)
@@ -116,6 +163,17 @@ void SpaceInvaderLevelManager::update(float frameTime)
 
 		if (levelNumber == 3)
 		{
+			startLevel();
+		}
+
+		if (levelNumber == 4)
+		{
+			startLevel();
+		}
+
+		if (levelNumber == 5)
+		{
+			startLevel();
 		}
 	}
 }
@@ -152,6 +210,27 @@ void SpaceInvaderLevelManager::render()
 		MyDrawEngine::GetInstance()->DrawAt(Vector2D(playingArea.GetTopRight().XValue - 100 - 100 * i,
 								playingArea.GetTopRight().YValue - 50), playerShip, 0.3f);
 	}
+
+	//Happens when Player is Dead
+	if (playerLives == 0)
+	{
+		//Displaying text telling the user they have died
+		MyDrawEngine::GetInstance()->WriteText(Vector2D(playingArea.GetCentre().XValue - 180,
+			playingArea.GetCentre().YValue + 100), L"You Died", MyDrawEngine::RED);
+
+		//Displaying the text "Score"
+		MyDrawEngine::GetInstance()->WriteText(Vector2D(playingArea.GetCentre().XValue - 180,
+			playingArea.GetCentre().YValue), L"Final Score: ", MyDrawEngine::RED);
+
+		//Displaying the score
+		MyDrawEngine::GetInstance()->WriteInt(Vector2D(playingArea.GetCentre().XValue + 100,
+			playingArea.GetCentre().YValue), score, MyDrawEngine::RED);
+
+		//Displaying text to tell user to return to Main Menu
+		MyDrawEngine::GetInstance()->WriteText(Vector2D(playingArea.GetCentre().XValue - 460,
+			playingArea.GetCentre().YValue - 100), L"Please return to the Main Menu using ESC",
+			MyDrawEngine::RED);
+	}
 }
 
 IShape2D& SpaceInvaderLevelManager::GetShape()
@@ -159,36 +238,56 @@ IShape2D& SpaceInvaderLevelManager::GetShape()
 	return collisionShape;
 }
 
-void SpaceInvaderLevelManager::HandleCollision(GameObject& other)
-{
-}
+void SpaceInvaderLevelManager::HandleCollision(GameObject& other) {}
 
-void SpaceInvaderLevelManager::DrawCollision() { DisplayScore(); }
+void SpaceInvaderLevelManager::DrawCollision() {}
 
 void SpaceInvaderLevelManager::enemyDead()
 {
 	score += 10;
 	numOfEnemies--;
+
+	if (numOfEnemies == 0)
+		startLevel();
 }
 
 void SpaceInvaderLevelManager::playerDead()
 {
-	//GameOver();
+	//Remove one life and then re-add the player back into the Game
+	playerLives--;
+
+	if(playerLives != 0)
+		Respawn();
+
+	else if (playerLives == 0)
+		GameOver();
+	
+	if (playerLives < 0)
+		playerLives = 0;
 }
 
 void SpaceInvaderLevelManager::GameOver()
 {
-	MyDrawEngine::GetInstance()->ClearBackBuffer();
-	Game::instance.MainMenu();
+	//Stopping the Game
+	Game::instance.StopGame();
 }
 
-int SpaceInvaderLevelManager::GetScore() const
+void SpaceInvaderLevelManager::Respawn()
 {
-	return score;
+	//Briefly freezing the game before allowing the Player to keep Playing
+	Game::instance.FreezeGame();
+
+	//Creating a new Player 
+	if (playerLives != 0 || playerLives <= 0)
+	{
+		SpaceInvaderPlayer* pPlayer = new SpaceInvaderPlayer();
+		pPlayer->initialise(&*pObjectManager, this, lastPosition);
+		pObjectManager->addObject(pPlayer);
+	}
 }
 
-
-void SpaceInvaderLevelManager::DisplayScore()
+Vector2D SpaceInvaderLevelManager::GetPlayerPosition(Vector2D lastPosition)
 {
-	MyDrawEngine::GetInstance()->WriteInt(Vector2D(0, 0), GetScore(), MyDrawEngine::WHITE);
+	this->lastPosition = lastPosition;
+	return lastPosition;
 }

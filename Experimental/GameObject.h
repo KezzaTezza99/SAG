@@ -27,6 +27,5 @@ public:
 	float GetImageSize() const;
 	void WrapScreen();
 	void Deactivate();
-	int DisplayScore();
 };
 

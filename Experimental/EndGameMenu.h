@@ -7,18 +7,17 @@
 //class EndGameMenu : public GameObject
 //{
 //private:
-//	ObjectManager* pObjectManager;
 //	Circle2D collisonShape;
-//	int currentSelection;
+//	int finalScore;
 //public:
 //	EndGameMenu();
 //	~EndGameMenu();
 //	void render();
-//	void initialise(ObjectManager* pObjectManager);
+//	void initialise(int finalScore);
 //	void update(float frameTime);
 //	IShape2D& GetShape();
 //	void HandleCollision(GameObject& other);
 //	void DrawCollision();
-//	void Menu();
+//	int GetScore();
 //};
 //

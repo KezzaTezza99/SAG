@@ -13,6 +13,7 @@ private:
 	int score;
 	int playerLives;
 	PictureIndex playerShip;
+	Vector2D lastPosition;
 	//TODO DEACTIVE ASTEROID IF SPACE INVADER STARTS
 public:
 	SpaceInvaderLevelManager();
@@ -27,7 +28,7 @@ public:
 	void enemyDead();
 	void playerDead();
 	void GameOver();
-	int GetScore() const;
-	void DisplayScore();
+	void Respawn();
+	Vector2D GetPlayerPosition(Vector2D lastPosition);
 };
 

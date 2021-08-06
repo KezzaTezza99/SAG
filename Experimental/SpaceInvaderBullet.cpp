@@ -1,6 +1,5 @@
 #include "SpaceInvaderBullet.h"
 #include "SpaceInvadeEnemy.h"
-#include "SpaceInvaderPlayer.h"
 
 SpaceInvaderBullet::SpaceInvaderBullet()
 {
@@ -28,7 +27,7 @@ void SpaceInvaderBullet::update(float frameTime)
 
     if (lifeTime <= 0.0f)
     {
-        isActive = false;
+        Deactivate();
     }
 }
 
@@ -40,9 +39,9 @@ IShape2D& SpaceInvaderBullet::GetShape()
 
 void SpaceInvaderBullet::HandleCollision(GameObject& other)
 {
-    if (typeid(other) == typeid(SpaceInvadeEnemy) || typeid(other) == typeid(SpaceInvaderPlayer))
+    if (typeid(other) == typeid(SpaceInvadeEnemy))
     {
-        isActive = false;
+        Deactivate();
     }
 }
 

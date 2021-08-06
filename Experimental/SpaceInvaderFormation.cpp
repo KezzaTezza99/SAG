@@ -1,5 +1,14 @@
 #include "SpaceInvaderFormation.h"
 
+SpaceInvaderFormation::SpaceInvaderFormation()
+{
+	position.set(playingArea.GetTopLeft().XValue + 100, 850);
+	direction = 1;
+	downTimer = 1.0f;
+}
+
+SpaceInvaderFormation::~SpaceInvaderFormation() {}
+
 void SpaceInvaderFormation::initialise()
 {
 	position.set(playingArea.GetTopLeft().XValue + 100, 850);
