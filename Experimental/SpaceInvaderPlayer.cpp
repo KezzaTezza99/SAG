@@ -1,13 +1,11 @@
+//Author: w18024358
+//Purpose: To provide a player unique to the Space Invader Mini Game, the Player has its own functionallity that 
+//matches the game mode being played
 #include "SpaceInvaderPlayer.h"
 #include "myinputs.h"
 #include "SpaceInvaderEnemyBullet.h"
 #include "SpaceInvaderBullet.h"
-
 //Due to having two bullet types it increases cohesion need to fix
-
-const float cAcceleration = 400.0f;
-const float cFriction = -0.5f;
-const float BULLETSPEED = 800.0f;
 
 SpaceInvaderPlayer::SpaceInvaderPlayer()
 {
@@ -19,14 +17,8 @@ SpaceInvaderPlayer::SpaceInvaderPlayer()
 	this->pLevelManager = pLevelManager;
 }
 
-SpaceInvaderPlayer::~SpaceInvaderPlayer()
+void SpaceInvaderPlayer::Initialise(ObjectManager* pObjectManager, SpaceInvaderLevelManager* pLevelManager, Vector2D startPosition)
 {
-}
-
-void SpaceInvaderPlayer::initialise(ObjectManager* pObjectManager, SpaceInvaderLevelManager* pLevelManager, Vector2D startPosition)
-{
-	Rectangle2D playingArea = MyDrawEngine::GetInstance()->GetViewport();
-
     this->pObjectManager = pObjectManager;
 	this->pLevelManager = pLevelManager;
 	position.set(startPosition);
@@ -39,9 +31,14 @@ void SpaceInvaderPlayer::initialise(ObjectManager* pObjectManager, SpaceInvaderL
 	imageSize = 0.5f;
 }
 
-void SpaceInvaderPlayer::update(float frameTime)
+void SpaceInvaderPlayer::Update(float frameTime)
 {
-	//Can Wrap Screen - Change this so you cannot wrap screen but also not go off screen
+	//Used for Movement and Shooting
+	const float cAcceleration = 400.0f;
+	const float cFriction = -0.5f;
+	const float BULLETSPEED = 900.0f;
+
+	//Can Wrap Screen 
 	WrapScreen();
 
 	MyInputs* pInputs = MyInputs::GetInstance();
@@ -71,10 +68,10 @@ void SpaceInvaderPlayer::update(float frameTime)
 			vel.setBearing(angle, BULLETSPEED);
 			Vector2D offset;	//This will make the bullets appear in front of AsteroidPlayer not centre
 			offset.setBearing(angle, 55.0f);
-			pBullet->initialise(position + offset, vel + velocity);
+			pBullet->Initialise(position + offset, vel + velocity);
 			if (pObjectManager)
 			{
-				pObjectManager->addObject(pBullet);
+				pObjectManager->AddObject(pBullet);
 				shootDelay = 0.8f;
 			}
 		}
@@ -94,13 +91,11 @@ void SpaceInvaderPlayer::HandleCollision(GameObject& other)
 	if (typeid(other) == typeid(SpaceInvaderEnemyBullet))
 	{
 		//Sending last location to Level Manager to Spawn another version at same location
-		pLevelManager->GetPlayerPosition(position);
-		
+		pLevelManager->GetPlayerPosition(position);	
 		//Deleting Self
 		Deactivate();
-		
 		//Telling the Level Manager player has died 
-		pLevelManager->playerDead();
+		pLevelManager->PlayerDead();
 	}
 }
 

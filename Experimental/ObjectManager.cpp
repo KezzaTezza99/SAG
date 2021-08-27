@@ -1,60 +1,66 @@
+//Author: w18024358
+//Purpose: To create a list of Game Objects that can provide an easy way to 
+//render, update, delete and collision detection for all objects in the game
 #include "ObjectManager.h"
-#include "AsteroidPlayer.h"
-#include "Rock.h"
-#include "Bullet.h"
-#include "Stars.h"
-#include "EnemyShip.h"
 #include "myinputs.h"
 
 ObjectManager::~ObjectManager()
 {
-	deleteAll();
+	//When the Object Manager has been Destroyed call this method
+	DeleteAll();									//Delete's all Game Objects in the List
 }
 
-void ObjectManager::addObject(GameObject* pGameObjects)
+void ObjectManager::AddObject(GameObject* pGameObjects)
 {
-	pObjectList.push_back(pGameObjects);
+	pObjectList.push_back(pGameObjects);			//Adding a Game Object to the List
 }
 
-void ObjectManager::renderAll()
+void ObjectManager::RenderAll()
 {
 	for (GameObject* pNextGameObject : pObjectList)
 	{
-		if(pNextGameObject && pNextGameObject->checkIfActive())
+		if(pNextGameObject && pNextGameObject->CheckIfActive())
 		{
-			pNextGameObject->render();
-			MyDrawEngine::GetInstance()->WriteInt(50, 50, pObjectList.size(), MyDrawEngine::GREEN);
+			//For evert Active Game Object in the List then Render the Game Object
+			pNextGameObject->Render();
 		}
 	}
 
-	//Show Collisions when Pressing H button
+	//Getting keyboard input
 	MyInputs::GetInstance()->SampleKeyboard();
+	//Gets useful debug infromation such as Collision Shapes and Object Manager list size - When "H" is pressed
 	if (MyInputs::GetInstance()->KeyPressed(DIK_H))
 	{
 		for (GameObject* pNextGameObject : pObjectList)
 		{
-			if (pNextGameObject && pNextGameObject->checkIfActive())
+			//For every active object in the list
+			if (pNextGameObject && pNextGameObject->CheckIfActive())
 			{
+				//Draw Collision Shapes
 				pNextGameObject->DrawCollision();
+				//Debug Info - Not using PlayingArea to place text in same location due to being a game object variable
+				MyDrawEngine::GetInstance()->WriteText(5, 50, L"Object's in List: ", MyDrawEngine::GREEN);
+				MyDrawEngine::GetInstance()->WriteInt(145, 50, pObjectList.size(), MyDrawEngine::GREEN);
 			}
 		}
 	}
-
 }
 
-void ObjectManager::updateAll(float frameTime)
+void ObjectManager::UpdateAll(float frameTime)
 {
 	for (GameObject* pNextGameObject : pObjectList)
 	{
-		if(pNextGameObject && pNextGameObject->checkIfActive())
+		if(pNextGameObject && pNextGameObject->CheckIfActive())
 		{
-			pNextGameObject->update(frameTime);
+			//All active objects in the list will be updated
+			pNextGameObject->Update(frameTime);
 		}
 	}
 }
 
-void ObjectManager::deleteAll()
+void ObjectManager::DeleteAll()
 {
+	//Deleting all the pointers in list and setting to nullptr before clearing the list
 	for(GameObject* pNextGameObject : pObjectList)
 	{
 		delete pNextGameObject;
@@ -63,21 +69,23 @@ void ObjectManager::deleteAll()
 	pObjectList.clear();
 }
 
-void ObjectManager::deleteInactiveObjects()
+void ObjectManager::DeleteInactiveObjects()
 {
 	for (GameObject* &pNextGameObject : pObjectList)
 	{
-		if(pNextGameObject && !pNextGameObject->checkIfActive())
+		if(pNextGameObject && !pNextGameObject->CheckIfActive())
 		{
 			delete pNextGameObject;
 			pNextGameObject = nullptr;
 		}
 	}
-	auto it = std::remove(pObjectList.begin(), pObjectList.end(), nullptr);		//Putting all of the Nullptrs to end of the list
-	pObjectList.erase(it, pObjectList.end());	//Removing everything at the end of the List - all the nullptrs 
+	//Putting all of the Nullptrs to end of the list
+	auto it = std::remove(pObjectList.begin(), pObjectList.end(), nullptr);		
+	//Removing everything at the end of the List - all the nullptrs 
+	pObjectList.erase(it, pObjectList.end());										
 }
 
-void ObjectManager::checkAllCollisions()
+void ObjectManager::CheckAllCollisions()
 {
 	std::list<GameObject*>::iterator it1;
 	std::list<GameObject*>::iterator it2;
@@ -87,7 +95,7 @@ void ObjectManager::checkAllCollisions()
 		for (it2 = next(it1); it2 != pObjectList.end(); it2++)
 		{
 			if ((*it1) && (*it2) &&
-				(*it1)->checkIfActive() && (*it2)->checkIfActive() &&
+				(*it1)->CheckIfActive() && (*it2)->CheckIfActive() &&
 				(*it1)->GetShape().Intersects((*it2)->GetShape()))
 			{
 				(*it1)->HandleCollision(**it2);
@@ -131,7 +139,7 @@ GameObject* ObjectManager::addObjectToFactory(std::wstring name)
 	//If the Pointer to object exists send it to add object
 	if (pNewObject)
 	{
-		addObject(pNewObject);
+		AddObject(pNewObject);
 	}
 	
 	return pNewObject;

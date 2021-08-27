@@ -172,7 +172,7 @@ int WINAPI WinMain(HINSTANCE hInstance,			// A number that registers the instanc
 		int gameError=Game::instance.Setup(bFullScreen, g_hWnd, g_hInstance);			// Initialise the game
 		g_ApplicationActive=true;							// Window is now foreground
 
-		if (gameError == FAILURE)							// If game failed to initialise
+		if (gameError == FAILURE)							// If game failed to Initialise
 			g_WindowClosed = true;
 		else
 		while(!g_WindowClosed)

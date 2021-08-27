@@ -1,3 +1,6 @@
+//Author: w18024358
+//Purpose: The purpose of the space invader bullet is to have a different bullet object that is unique to 
+//the space invader mini game
 #include "SpaceInvaderBullet.h"
 #include "SpaceInvadeEnemy.h"
 
@@ -7,11 +10,7 @@ SpaceInvaderBullet::SpaceInvaderBullet()
     lifeTime = 3.0f;
 }
 
-SpaceInvaderBullet::~SpaceInvaderBullet()
-{
-}
-
-void SpaceInvaderBullet::initialise(Vector2D startPosition, Vector2D startVelocity)
+void SpaceInvaderBullet::Initialise(Vector2D startPosition, Vector2D startVelocity)
 {
     position = startPosition;
     velocity = startVelocity;
@@ -20,7 +19,7 @@ void SpaceInvaderBullet::initialise(Vector2D startPosition, Vector2D startVeloci
     LoadImage(L"plasma.bmp");
 }
 
-void SpaceInvaderBullet::update(float frameTime)
+void SpaceInvaderBullet::Update(float frameTime)
 {
     position = position + velocity * frameTime;
     lifeTime = lifeTime - frameTime;

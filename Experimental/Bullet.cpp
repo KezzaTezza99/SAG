@@ -1,3 +1,5 @@
+//Author: w18024358
+//Purpose: Implement all the necessary code for the bullet
 #include "Bullet.h"
 #include "Rock.h"
 #include "EnemyShip.h"
@@ -6,24 +8,20 @@
 
 Bullet::Bullet()
 {
+	position.set(0, 0);
 	velocity.set(0, 0);
-	lifeTime = 2.0f;	//Getting rid of Warning
+	lifeTime = 2.0f;
 }
 
-Bullet::~Bullet()
+void Bullet::Initialise(Vector2D startPosition, Vector2D startVelocity)
 {
-
-}
-
-void Bullet::initialise(Vector2D startPosition, Vector2D startVelocity)
-{
-	position = startPosition;
-	velocity = startVelocity;
+	this->position = startPosition;
+	this->velocity = startVelocity;
 	LoadImage(L"bullet.bmp");
 	lifeTime = 2.0f;
 }
 
-void Bullet::update(float frameTime)
+void Bullet::Update(float frameTime)
 {
 	//Asteroid Bullets will wrap the screen
 	WrapScreen();
@@ -32,7 +30,7 @@ void Bullet::update(float frameTime)
 
 	if (lifeTime <= 0.0f)
 	{
-		isActive = false;
+		Deactivate();
 	}
 }
 
@@ -52,9 +50,9 @@ void Bullet::DrawCollision()
 
 void Bullet::HandleCollision(GameObject& other)
 {
-	if (typeid(other) == typeid(Rock) || typeid(other) == typeid(EnemyShip) 
-		|| typeid(other) == typeid(Mines) || typeid(other) == typeid(AsteroidPlayer))
+	if(typeid(other) == typeid(AsteroidPlayer) || typeid(other) == typeid(EnemyShip)
+		|| typeid(other) == typeid(Mines) || typeid(other) == typeid(Rock))
 	{
-		isActive = false;
+		Deactivate();
 	}
 }

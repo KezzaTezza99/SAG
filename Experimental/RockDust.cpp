@@ -1,3 +1,5 @@
+//Author: w18024358
+//Purpose: Add some more visual effects to make the destruction of the Small Asteroids better
 #include "RockDust.h"
 #include "mydrawengine.h"
 
@@ -17,12 +19,7 @@ RockDust::RockDust()
     images[7] = MyDrawEngine::GetInstance()->LoadPicture(L"smoke8.bmp");
 }
 
-RockDust::~RockDust()
-{
-
-}
-
-void RockDust::initialise(Vector2D position, float imageSize)
+void RockDust::Initialise(Vector2D position, float imageSize)
 {
     this->position = position;
     this->imageSize = imageSize;
@@ -40,7 +37,7 @@ void RockDust::initialise(Vector2D position, float imageSize)
     isActive = true;
 }
 
-void RockDust::update(float frameTime)
+void RockDust::Update(float frameTime)
 {
     animationSpeed = 50.00f;
 
@@ -52,10 +49,10 @@ void RockDust::update(float frameTime)
     }
 }
 
-void RockDust::render()
+void RockDust::Render()
 {
     //1.5 size 
-    //1 good size for small rocks maybe update this to change
+    //1 good size for small rocks maybe Update this to change
 	MyDrawEngine::GetInstance()->DrawAt(position, images[int(currentImage)], imageSize, angle);
 }
 
@@ -64,7 +61,4 @@ IShape2D& RockDust::GetShape()
 	return collisionShape;
 }
 
-void RockDust::HandleCollision(GameObject& other)
-{
-	//Dont need collision
-}
+void RockDust::HandleCollision(GameObject& other) {}

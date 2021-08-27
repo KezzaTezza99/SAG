@@ -1,46 +1,42 @@
+//Author: w18024358
+//Purpose: Providing a way for the Player to start the mini game
 #include "SpaceInvadersArcadeMachine.h"
 #include "SpaceInvaderLevelManager.h"
 #include "ArcadePlayer.h"
+#include "Shapes.h"
 
 SpaceInvadersArcadeMachine::SpaceInvadersArcadeMachine()
 {
     this->pObjectManager = pObjectManager;
-    //this->pAsteroids = pAsteroids;
-    position.set(0, 0);
+    position.set(600, 500);
     startSpaceInvaders = false;
 }
 
-SpaceInvadersArcadeMachine::~SpaceInvadersArcadeMachine() {}
-
-void SpaceInvadersArcadeMachine::initialise(ObjectManager* pObjectManager)
+void SpaceInvadersArcadeMachine::Initialise(ObjectManager* pObjectManager)
 {
     this->pObjectManager = pObjectManager;
-    //this->pAsteroids = pAsteroids;
 
-    position.set(300, 300);
+    position.set(600, 500);
     startSpaceInvaders = false;
-    LoadImage(L"enemy.bmp");            //Change this
+    LoadImage(L"InvaderMachine.png");
 }
 
-void SpaceInvadersArcadeMachine::update(float frameTime)
+void SpaceInvadersArcadeMachine::Update(float frameTime)
 {
     if (startSpaceInvaders)
     {
         //Creating the Space Invaders Level Manager
         SpaceInvaderLevelManager* pLevelManager = new SpaceInvaderLevelManager();
-        pLevelManager->initialise(&*pObjectManager);
-        pObjectManager->addObject(pLevelManager);
-
+        pLevelManager->Initialise(&*pObjectManager);
+        pObjectManager->AddObject(pLevelManager);
         //Delete the Space Invader Arcade Machine
         Deactivate();
-        //Delete the Asteroids Arcade Machine
-        //pAsteroids->Deactivate();
     }
 }
 
 IShape2D& SpaceInvadersArcadeMachine::GetShape()
 {
-    collisionShape.PlaceAt(position, 50.0f);
+    collisionShape.PlaceAt(position, 200.0f);
     return collisionShape;
 }
 

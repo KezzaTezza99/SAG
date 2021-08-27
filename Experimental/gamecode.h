@@ -3,7 +3,9 @@
 // Chris Rook
 // Last modified 25/09/2018
 //   Update to prevent game loop from flipping twice
-
+//Modified to add two methods for stopping the game for two different amounts of time
+//necessary for when the game ends to display some final information to the player
+//w18024358
 
 #pragma once
 #include "errortype.h"
@@ -69,7 +71,7 @@ public:
 	ErrorType MainMenu();
 
    // Called at the start of the game - when changing state from MENU to RUNNING
-   // Use this to initialise the core game
+   // Use this to Initialise the core game
 	ErrorType StartOfGame();
 
    // Called each frame when in the RUNNING state.
@@ -78,13 +80,17 @@ public:
    // Gameplay programmer will develop this to create an actual game
 	ErrorType Update();
 
-   // Called when the AsteroidPlayer ends the game
+   // Called when the player ends the game
    // Currently this is done from the PAUSED state, when returning to the main menu
    // but could be done by the gameplay programmer in other situations
    // This will be used by the gameplay programmer to clean up
 	ErrorType EndOfGame();
 
+	//Freeze's the game for a brief amount of time when the Space Invader Player Dies
+	//allows me to respawn the Player before resarting the game
 	void FreezeGame();
+	//"Stops" the game for a long peroid of time to encourage the user to quit to the main menu
+	//during this time some final information is displayed to the user such as their score, lives lost etc
 	void StopGame();
 };
 

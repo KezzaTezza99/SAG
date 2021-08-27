@@ -1,7 +1,7 @@
+//Author: w18024358
+//Purpose: Implementing the necessary code to allow all the functionallity needed for the Player
 #include "ArcadePlayer.h"
 #include "myinputs.h"
-#include "AsteroidArcadeMachine.h"
-#include "SpaceInvadersArcadeMachine.h"
 
 const float cAcceleration = 200.0f;	
 const float cFriction = 0.5f;
@@ -9,26 +9,32 @@ const float cTurnSpeed = 1.0f;
 
 ArcadePlayer::ArcadePlayer()
 {
+	//Setting member variables
 	this->pGameManager = pGameManager;
 	this->pAsteroids = pAsteroids;
 	this->pSpaceInvaders = pSpaceInvaders;
+	this->pHunted = pHunted;
     position.set(0, 0);
 }
 
-ArcadePlayer::~ArcadePlayer() {}
-
-void ArcadePlayer::initialise(GameManager* pGameManager, AsteroidArcadeMachine* pAsteroids, SpaceInvadersArcadeMachine* pSpaceInvaders)
+void ArcadePlayer::Initialise(GameManager* pGameManager, AsteroidArcadeMachine* pAsteroids,
+								SpaceInvadersArcadeMachine* pSpaceInvaders, HuntedArcadeMachine* pHunted)
 {
+	//Setting the Member Variables to equal the params 
 	this->pGameManager = pGameManager;
 	this->pAsteroids = pAsteroids;
 	this-> pSpaceInvaders = pSpaceInvaders;
+	this->pHunted = pHunted;
+	
+	//Resetting Position and Velocity to be 0
     position.set(0, 0);
     velocity.set(0, 0);
-	LoadImage(L"enemy.bmp");
+	LoadImage(L"enemy.bmp");						//Loading the Bitmap
 }
 
-void ArcadePlayer::update(float frameTime)
+void ArcadePlayer::Update(float frameTime)
 {
+	//Getting input from the Keyboard
 	MyInputs* pInputs = MyInputs::GetInstance();
 	pInputs->SampleKeyboard();
 
@@ -57,12 +63,14 @@ void ArcadePlayer::update(float frameTime)
 
 IShape2D& ArcadePlayer::GetShape()
 {
+	//Setting and placing the Collision shape
     collisionShape.PlaceAt(position, 50.0f);
     return collisionShape;
 }
 
 void ArcadePlayer::HandleCollision(GameObject& other)
 {
+	//Collisions
 	if (typeid(other) == typeid(AsteroidArcadeMachine))
 	{
 		//Sets itself to Deactive to be removed from the game
@@ -72,6 +80,8 @@ void ArcadePlayer::HandleCollision(GameObject& other)
 		pGameManager->Deactivate();
 		//As player selected Asteroids need to Delete Space Invaders
 		pSpaceInvaders->Deactivate();
+		//and Hunted
+		pHunted->Deactivate();
 	}
 
 	if (typeid(other) == typeid(SpaceInvadersArcadeMachine))
@@ -80,10 +90,20 @@ void ArcadePlayer::HandleCollision(GameObject& other)
 		Deactivate();
 		pGameManager->Deactivate();
 		pAsteroids->Deactivate();
+		pHunted->Deactivate();
+	}
+
+	if (typeid(other) == typeid(HuntedArcadeMachine))
+	{
+		Deactivate();
+		pGameManager->Deactivate();
+		pAsteroids->Deactivate();
+		pSpaceInvaders->Deactivate();
 	}
 }
 
 void ArcadePlayer::DrawCollision()
 {
+	//Useful Debug Info 
     MyDrawEngine::GetInstance()->FillCircle(collisionShape.GetCentre(), collisionShape.GetRadius(), MyDrawEngine::LIGHTGREEN);
 }

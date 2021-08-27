@@ -1,15 +1,14 @@
+//Author: w18024358
+//Purpose: Implement the necessary code to produce an explosion animation as well as 
+//a boost effect for the Hunted Player
 #include "Explosion.h"
-#include "mydrawengine.h"
-#include "ObjectManager.h"
-#include "AsteroidPlayer.h"
-#include "Rock.h"
-#include "Mines.h"
 
 Explosion::Explosion()
 {
-    currentImage = 0.00f;
-    animationSpeed = 0.00f;
-
+    currentImage = 0.00f;                           //Initialising to 0
+    animationSpeed = 0.00f;                         //Initialising to 0
+    
+    //Adding the 8 Different Images into the Array
     images[0] = MyDrawEngine::GetInstance()->LoadPicture(L"explosion1.bmp");
     images[1] = MyDrawEngine::GetInstance()->LoadPicture(L"explosion2.bmp");
     images[2] = MyDrawEngine::GetInstance()->LoadPicture(L"explosion3.bmp");
@@ -20,14 +19,15 @@ Explosion::Explosion()
     images[7] = MyDrawEngine::GetInstance()->LoadPicture(L"explosion8.bmp");
 }
 
-Explosion::~Explosion()
+void Explosion::Initialise(Vector2D position, float size, float time, Vector2D velocity)
 {
-}
-
-void Explosion::initialise(Vector2D position)
-{
+    //Setting the Member Variables to be equal to the Paramaters passed
     this->position = position;
-
+    imageSize = size;
+    this->animationSpeed = time;
+    this->velocity = velocity;
+    
+    //Resetting Images just as a Precaution
     images[0] = MyDrawEngine::GetInstance()->LoadPicture(L"explosion1.bmp");
     images[1] = MyDrawEngine::GetInstance()->LoadPicture(L"explosion2.bmp");
     images[2] = MyDrawEngine::GetInstance()->LoadPicture(L"explosion3.bmp");
@@ -41,37 +41,32 @@ void Explosion::initialise(Vector2D position)
     isActive = true;
 }
 
-void Explosion::update(float frameTime)
+void Explosion::Update(float frameTime)
 {
-    animationSpeed = 20.00f;
+    //Adding to the current image over time multiplied by the speed of the animation
+    //this makes the images go from 1-8 (0-7 0 based index)
     currentImage += frameTime * animationSpeed;
 
+    //After the final image then Deactivate the Explosion
     if (currentImage >= 8)
     {
-        isActive = false;
+        Deactivate();
     }
+    
+    //By default Velocity is 0,0 so wont do anything / only needed for Hunted Player Jet Engine
+    position = position + velocity * frameTime;
 }
 
-void Explosion::render()
+void Explosion::Render()
 {
-    MyDrawEngine::GetInstance()->DrawAt(position, images[int(currentImage)], 2.5f, angle);
+    //Rendering the Explosion differently than normal
+    MyDrawEngine::GetInstance()->DrawAt(position, images[int(currentImage)], imageSize, angle);
 }
 
 IShape2D& Explosion::GetShape()
 {
-    //explosionRadius.PlaceAt(position, 140.0f);
-    //collisionShape.PlaceAt(position, 200.0f);
-
-    //return  collisionShape, explosionRadius;
     return collisionShape;
 }
 
-void Explosion::HandleCollision(GameObject& other)
-{
-}
-
-void Explosion::DrawCollision()
-{
-    MyDrawEngine::GetInstance()->FillCircle(explosionRadius.GetCentre(), explosionRadius.GetRadius(), MyDrawEngine::RED);
-    MyDrawEngine::GetInstance()->FillCircle(collisionShape.GetCentre(), collisionShape.GetRadius(), MyDrawEngine::GREEN);
-}
+void Explosion::HandleCollision(GameObject& other) {}
+void Explosion::DrawCollision() {}

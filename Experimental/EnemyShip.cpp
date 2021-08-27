@@ -1,32 +1,24 @@
+//Author: w18024358
+//Purpose: Implement the necessary functionallity for the Enemy Ship 
 #include "EnemyShip.h"
-#include "AsteroidPlayer.h"
-#include "myinputs.h"
 #include "Bullet.h"
-#include <typeinfo>
-#include "Rock.h"
 #include "Explosion.h"
-#include "vector2D.h"
-
-const float cFriction = 0.5f;
-const float BULLETSPEED = 600.0f;
 
 EnemyShip::EnemyShip()
 {
 	velocity.set(0, 0);
 	angle = 0;
-	shootDelay = 0;
-	countDown = 0;
+	shootDelay = 3.0f;
+	countDown = 3.0f;
 
-	this->pObjectManager = pObjectManager;	//This is here to stop a warning i was getting with not initilazing member variables
+	this->pObjectManager = pObjectManager;
+	this->pLevelManager = pLevelManager;
 	this->pThePlayer = pThePlayer;
+	this->pParticles = pParticles;
 }
 
-EnemyShip::~EnemyShip()
-{
-
-}
-
-void EnemyShip::initialise(ObjectManager* pObjectManager, AsteroidPlayer* pThePlayer, Vector2D randomStartPosition)
+void EnemyShip::Initialise(ObjectManager* pObjectManager, HuntedLevelManager* pLevelManager, 
+	HuntedPlayer* pThePlayer, Vector2D randomStartPosition, ParticleSystem* pParticles)
 {
 	position = randomStartPosition;
 	velocity.set(0, 0);
@@ -34,36 +26,34 @@ void EnemyShip::initialise(ObjectManager* pObjectManager, AsteroidPlayer* pThePl
 	LoadImage(L"enemy.bmp");
 
 	this->pObjectManager = pObjectManager;
+	this->pLevelManager = pLevelManager;
 	this->pThePlayer = pThePlayer;
-	shootDelay = 0;
-	countDown = 2;
+	this->pParticles = pParticles;
+	shootDelay = 3.0f;
+	countDown = 3.0f;
 }
 
-void EnemyShip::update(float frameTime)
+void EnemyShip::Update(float frameTime)
 {
-	//Let Enemy Wrap Screene
-	WrapScreen();
+	const float cFriction = 0.5f;
+	const float BULLETSPEED = 850.0f;
 
 	//Add Physics to movement like player movement?
-	if (pThePlayer->checkIfActive() == true)
+	//If the Player is still Alive then move towards them without this will get crashes
+	if (pThePlayer->CheckIfActive() == true)
 	{
 		//Ship will always move and look towards the Player
 		//When player dies need to stop looking at player because causes null pointer
-		Vector2D PlayerPosition = pThePlayer->getPosition() - position;
+		Vector2D PlayerPosition = pThePlayer->GetPosition() - position;
 		angle = PlayerPosition.angle();
 		position = position + PlayerPosition * frameTime;
 	}
-	else
-	{
-		//When Player dies slowly slow the enemy down to a stop
-		velocity = velocity - velocity * cFriction * frameTime;
-	}
-
+	
 	//Dont want the enemy to shoot straight away - also fixes issue of enemy killing themselves by 
-	//catching up to the bullet. Could fix this properly? Think the random veloicty given is to fast to start
+	//catching up to the bullet. Could fix this properly? Think the random velocity given is to fast to start
 	//Enemy Shoots at Asteroid Player
 	countDown = countDown - frameTime;
-	if (countDown <= 0 && shootDelay <= 0 && pThePlayer->checkIfActive() == true) 
+	if (countDown <= 0 && shootDelay <= 0 && pThePlayer->CheckIfActive() == true) 
 	{
 		Bullet* pBullet = new Bullet();
 		if (pBullet)
@@ -72,12 +62,12 @@ void EnemyShip::update(float frameTime)
 			vel.setBearing(angle, BULLETSPEED);
 			Vector2D offset;
 			offset.setBearing(angle, 60.0f);
-			pBullet->initialise(position + offset, velocity + vel);
+			pBullet->Initialise(position + offset, velocity + vel);
 
 			if (pObjectManager)
 			{
-				pObjectManager->addObject(pBullet);
-				shootDelay = 1.5f;	
+				pObjectManager->AddObject(pBullet);
+				shootDelay = 3.0f;	
 				countDown = 0;
 			}
 		}
@@ -94,22 +84,20 @@ IShape2D& EnemyShip::GetShape()
 
 void EnemyShip::HandleCollision(GameObject& other)
 {
-	//If Enemy Ship collides with Rock it will dissapear
-	if (typeid(other) == typeid(Rock))
-	{
-		isActive = false;
-		Explosion* pExplosion = new Explosion();
-		pExplosion->initialise(position);
-		pObjectManager->addObject(pExplosion);
-	}
-
 	//If collides with Bullet it will Dissapear 
 	if (typeid(other) == typeid(Bullet))
 	{
-		isActive = false;
+		//Deleting the Ship
+		Deactivate();
+		//Creating Explosion
 		Explosion* pExplosion = new Explosion();
-		pExplosion->initialise(position);
-		pObjectManager->addObject(pExplosion);
+		pExplosion->Initialise(position);
+		pObjectManager->AddObject(pExplosion);
+		//Adding Particles for better effect
+		pParticles->AddParticles(position, 800.0f, MyDrawEngine::YELLOW, 20);
+		pParticles->AddParticles(position, 600.0f, MyDrawEngine::RED, 10);
+		//Telling Level Manager they died
+		pLevelManager->EnemyDead();
 	}
 }
 
@@ -120,10 +108,3 @@ void EnemyShip::DrawCollision()
 	//Line Showing the Direction of Object
 	MyDrawEngine::GetInstance()->DrawLine(position, position + velocity, MyDrawEngine::RED);
 }
-
-Vector2D EnemyShip::getPosition()
-{
-	return position;
-}
-
-

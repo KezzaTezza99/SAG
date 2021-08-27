@@ -1,24 +1,24 @@
+//Author: w18024358
+//Purpose: To provide a bullet that only kills the space invader player
 #include "SpaceInvaderEnemyBullet.h"
 #include "SpaceInvaderPlayer.h"
 
 SpaceInvaderEnemyBullet::SpaceInvaderEnemyBullet()
 {
     velocity.set(0, 0);
-    lifeTime = 3.0f;
+    lifeTime = 4.0f;
 }
 
-SpaceInvaderEnemyBullet::~SpaceInvaderEnemyBullet() {}
-
-void SpaceInvaderEnemyBullet::initialise(Vector2D startPosition, Vector2D startVelocity)
+void SpaceInvaderEnemyBullet::Initialise(Vector2D startPosition, Vector2D startVelocity)
 {
     position = startPosition;
     velocity = startVelocity;
-    lifeTime = 3.0f;
+    lifeTime = 4.0f;
     imageSize = 2.0f;       //On my laptop the bullets are very hard to spot so made them bigger
     LoadImage(L"bullet.bmp");
 }
 
-void SpaceInvaderEnemyBullet::update(float frameTime)
+void SpaceInvaderEnemyBullet::Update(float frameTime)
 {
     position = position + velocity * frameTime;
     lifeTime = lifeTime - frameTime;

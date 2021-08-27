@@ -6,7 +6,11 @@
 // Modified 4/11/2018
    // Changed FillCircle to use positive angles.
 // Modified 06/09/2019
-//		Updating LoadPicture, FindPicture, AddFont to const wchar_t to support string literals in parameters
+//		Updating LoadPicture, FindPicture, AddFont to const wchar_t to support string literals in parameters 
+//Modified 19/08/2021
+//w18024358
+	//Added a "new" font, just Arial but bold and smaller text
+	//used to display some warning information on the main menu, using different font to make it stand out
 
 
 #include "mydrawengine.h"
@@ -37,6 +41,8 @@ ErrorType MyDrawEngine::Start(HWND hwnd, bool bFullScreen)
 
 	// Start a default font
 	instance->AddFont(L"Ariel", 24, false, false);
+	//Adding another smaller font
+	instance->AddFont(L"Ariel Small", 15, true, false);
 	
 	// If user has requested windowed mode
 	if(!bFullScreen)
@@ -915,7 +921,7 @@ ErrorType MyDrawEngine::DrawAt(Vector2D position, PictureIndex pic, float scale,
 	// Check texture is loaded
 	if(!thePicture.lpTheTexture)
 	{
-		ErrorLogger::Writeln(L"Cannot render MyPicture in DrawAt. MyPicture not initialised.");
+		ErrorLogger::Writeln(L"Cannot Render MyPicture in DrawAt. MyPicture not initialised.");
 		return FAILURE;
 	}
 
@@ -923,7 +929,7 @@ ErrorType MyDrawEngine::DrawAt(Vector2D position, PictureIndex pic, float scale,
 	HRESULT err = m_lpSprite->Begin(D3DXSPRITE_ALPHABLEND);		// Alpha Blending requested
 	if(FAILED(err))
 	{
-		ErrorLogger::Writeln(L"Failed to begin sprite render in DrawAt");
+		ErrorLogger::Writeln(L"Failed to begin sprite Render in DrawAt");
 		ErrorLogger::Writeln(ERRORSTRING(err));
 		return FAILURE;
 	}

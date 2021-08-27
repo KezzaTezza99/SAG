@@ -1,10 +1,10 @@
+//Author: w18024358
+//Purpose: To provide an objective to the Player, the Player needs to avoid being shot by the enemies but also 
+//stop them from reaching the bottom of the screen
 #include "SpaceInvadeEnemy.h"
-#include "SpaceInvaderBullet.h"
 #include "SpaceInvaderEnemyBullet.h"
-#include "gamecode.h"
+#include "SpaceInvaderBullet.h"
 #include "Explosion.h"
-
-const float BULLETSPEED = 600.0f;
 
 SpaceInvadeEnemy::SpaceInvadeEnemy()
 {
@@ -14,14 +14,10 @@ SpaceInvadeEnemy::SpaceInvadeEnemy()
     this->pLevelManager = pLevelManager;
     position.set(0, 0);
     velocity.set(0, 0);
-    randomShootDelay = rand() % 15 + 3.0f;      //3-15 Seconds Enemy Shoots
+    randomShootDelay = rand() % 15 + 3.0f;          //3-15 Seconds Enemy Shoots
 }
 
-SpaceInvadeEnemy::~SpaceInvadeEnemy()
-{
-}
-
-void SpaceInvadeEnemy::initialise(ObjectManager* pObjectManager, Vector2D offset, SpaceInvaderFormation* pFormation,
+void SpaceInvadeEnemy::Initialise(ObjectManager* pObjectManager, Vector2D offset, SpaceInvaderFormation* pFormation,
                                   SpaceInvaderLevelManager* pLevelManager)
 {
     this->pObjectManager = pObjectManager;
@@ -40,15 +36,17 @@ void SpaceInvadeEnemy::initialise(ObjectManager* pObjectManager, Vector2D offset
     angle = float(3.142);
 }
 
-void SpaceInvadeEnemy::update(float frameTime)
+void SpaceInvadeEnemy::Update(float frameTime)
 {
+    const float BULLETSPEED = 800.0f;
+
     //If Level Manager is not Active delete self 
     //this will happen when Player dies for third time
-    if (!pLevelManager->checkIfActive())
+    if (!pLevelManager->CheckIfActive())
         Deactivate();
 
     //Movement
-    position = pFormation->getPosition() + offset;
+    position = pFormation->GetPosition() + offset;
    
     //Shooting    
     if (randomShootDelay <= 0)
@@ -60,11 +58,11 @@ void SpaceInvadeEnemy::update(float frameTime)
             vel.setBearing(angle, BULLETSPEED);
             Vector2D offset;
             offset.setBearing(angle, 60.0f);
-            pBullet->initialise(position + offset, velocity + vel);
+            pBullet->Initialise(position + offset, velocity + vel);
 
             if (pObjectManager)
             {
-                pObjectManager->addObject(pBullet);
+                pObjectManager->AddObject(pBullet);
                 randomShootDelay = rand() % 15 + 3.0f;
             }
         }
@@ -73,9 +71,6 @@ void SpaceInvadeEnemy::update(float frameTime)
     randomShootDelay = randomShootDelay - frameTime;
 
     //Formation Movement
-    //Getting Dimensions of Screen
-    Rectangle2D playingArea = MyDrawEngine::GetInstance()->GetViewport();
-
     //If the Enemy hits right of screen we need to move them all left vice versa
     //Far right of screen
     if (position.XValue > playingArea.GetTopRight().XValue - 100)
@@ -89,6 +84,11 @@ void SpaceInvadeEnemy::update(float frameTime)
         //Enemy moves Left
         pFormation->MoveDownLeft();
     }  
+
+    //If the enemy has reached the bottom of the screen / threshold 
+    //game is over
+    if (position.YValue <= -750)
+        pLevelManager->GameOver();
 }
 
 IShape2D& SpaceInvadeEnemy::GetShape()
@@ -103,14 +103,14 @@ void SpaceInvadeEnemy::HandleCollision(GameObject& other)
     {
         //Creating Explosion
         Explosion* pExplosion = new Explosion();
-        pExplosion->initialise(position);
-        pObjectManager->addObject(pExplosion);
+        pExplosion->Initialise(position);
+        pObjectManager->AddObject(pExplosion);
 
         //Deactivating the Enemy
         Deactivate();
 
         //Increasing Score
-        pLevelManager->enemyDead();
+        pLevelManager->EnemyDead();
     }
 }
 

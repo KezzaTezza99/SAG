@@ -1,4 +1,8 @@
 // GameCode.cpp		
+// Modified by w18024358
+//Added some code to display a different main menu than the default
+//adds some visual effects 
+
 #include "gamecode.h"
 #include "mydrawengine.h"
 #include "mysoundengine.h"
@@ -8,10 +12,8 @@
 #include "errorlogger.h"
 #include <math.h>
 #include "shapes.h"
-#include "AsteroidArcadeMachine.h"
 #include "GameManager.h"
-#include "ArcadePlayer.h"
-#include "EndGameMenu.h"
+#include "ParticleSystem.h"
 
 Game::Game()
 {
@@ -213,7 +215,85 @@ ErrorType Game::PauseMenu()
 // which is currently a basic placeholder
 ErrorType Game::MainMenu()
 {
+	//----------------------------------------------------------------------------------
+	//Sorry Chris wanted to make a different Main Menu - how come if I create a a bunch of stars in a loop using a random
+	//number they constantly move in a weird pattern? I suspect its due to random number's being seeded with system time?
+	//and thus the new position keeps changing?
+
+	//When the Player plays the Hunted game mode and moves out of the playing area as they can freeroam 
+	//when they return to the main menu and replay the "Arcade" they no longer see anything as the camera is no longer
+	//at the position (0,0) as needed
+	//resetting the camera didn't seem todo anything so resetting and then replacing the Camera at the original position
+	MyDrawEngine::GetInstance()->theCamera.Reset();
+	MyDrawEngine::GetInstance()->theCamera.PlaceAt(Vector2D(0, 0));			//Player no longer needs to quit to keep playing
+
+	//Creating a Colour to use --- Dark Blue kinda colour / Space
+	int r = 2;
+	int g = 2;
+	int b = 18;
+	int colour = _XRGB(r, g, b);
+	//Creating a rectangle that will be coloured to display over the entire screen
+	Rectangle2D background = MyDrawEngine::GetInstance()->GetViewport();
+	background.PlaceAt(background.GetBottomLeft(), background.GetTopRight());
+	MyDrawEngine::GetInstance()->FillRect(background, colour);
+
+	//Adding Image Assets around the Screen
+	PictureIndex moon = MyDrawEngine::GetInstance()->LoadPicture(L"enc_moon.bmp");
+	PictureIndex stars = MyDrawEngine::GetInstance()->LoadPicture(L"star.bmp");
+
+	//Placing the Moon
+	MyDrawEngine::GetInstance()->DrawAt(Vector2D(background.GetCentre().XValue + 980, 
+										background.GetCentre().YValue + 250), moon, 3.0f);
+	
+	//As random numbers dont work going to use a mix of these to try and replicate the effect needed
+	//very messy this way
+	int spacing = 150;									//All will be spaced out on both Axis
+	int variation = 40;									//Used to gradually add to both Axis again
+
+	//Starting bottom left
+	for (int i = 0; i < 6; i++)
+	{
+		//Placing the Stars
+		MyDrawEngine::GetInstance()->DrawAt(Vector2D(background.GetBottomLeft().XValue + variation * i,
+											background.GetBottomLeft().YValue + variation * i), stars, 1.0f);
+		variation += 60;
+	}
+
+	//Starting bottom right
+	for (int i = 0; i < 10; i++)
+	{
+		//Placing the Stars
+		MyDrawEngine::GetInstance()->DrawAt(Vector2D(background.GetBottomRight().XValue - variation * i,
+											background.GetBottomRight().YValue + 40 * i), stars, 1.0f);
+		variation += 60;
+	}
+
+	variation = 40;										//Resetting back to 40
+	//Starting top left
+	for (int i = 0; i < 10; i++)
+	{
+		//Placing the Stars
+		MyDrawEngine::GetInstance()->DrawAt(Vector2D(background.GetTopLeft().XValue + variation * i,
+											background.GetTopLeft().YValue - variation * i), stars, 1.0f);
+		variation += 80;
+	}
+
+	//Placing some Stars that are bigger
+	MyDrawEngine::GetInstance()->DrawAt(Vector2D(200, 300), stars, 1.2f);
+	MyDrawEngine::GetInstance()->DrawAt(Vector2D(700, -300), stars, 1.2f);
+	//----------------------------------------------------------------------------------
+	
+	//Main Menu Text
 	MyDrawEngine::GetInstance()->WriteText(450,220, L"Main menu", MyDrawEngine::WHITE);
+	
+	//Adding a message to display to Chris 
+	//USING A DIFFERENT FONT SIZE
+	MyDrawEngine::GetInstance()->WriteText(Vector2D(background.GetBottomRight().XValue - 750,
+											background.GetBottomRight().YValue + 400),  L"Warning: Game in Alpha v0.3", 
+											MyDrawEngine::RED, 1);							//Not actually Version 0.3 :D
+	MyDrawEngine::GetInstance()->WriteText(Vector2D(background.GetBottomRight().XValue - 750,
+											background.GetBottomRight().YValue + 300),	L"Hunted Game Mode Incomplete",
+											MyDrawEngine::RED, 1);
 
 	const int NUMOPTIONS = 3;
 	wchar_t options[NUMOPTIONS][15] = {L"Start game", L"Go Fullscreen",L"Exit"};
@@ -291,25 +371,31 @@ ErrorType Game::MainMenu()
 // **********************************************************************************************
 
 // Called at the start of the game - when changing state from MENU to RUNNING
-// Use this to initialise the core game
+// Use this to Initialise the core game
 ErrorType Game::StartOfGame()
 {
    // Code to set up your game *********************************************
    // **********************************************************************
 	//Creating a Seed to Ensure Random Number Generation is always Random 
-	srand(unsigned int(time(NULL)));	//If this isnt here random number will always produce the same value
+	srand(unsigned int(time(NULL)));				//If this isnt here random number will always produce the same value
 	
 	gt.mark();
 	gt.mark();
 
-	framesToFreeze = 0;		//Using this when the Player Dies and Respawns
+	framesToFreeze = 0;								//Using this when the Player Dies and Respawns
+
+	//Creating the Particles here and then giving it to the GameManager 
+	//who can pass the particle system to all the necessary Level Managers
+	ParticleSystem* pParticles = new ParticleSystem();
+	pParticles->Initialise();
+	objectManager.AddObject(pParticles);
 
 	//Adding Game Manager which will start the Arcade Game and Level Manager
 	//It will then be deleted, when the user choses a mini game the level manager will then be deleted.
 	//Will create a new Level Manager based on the Mini Game
 	GameManager* pGameManager = new GameManager();
-	pGameManager->initialise(&objectManager);		
-	objectManager.addObject(pGameManager);
+	pGameManager->Initialise(&objectManager, pParticles);		
+	objectManager.AddObject(pGameManager);
 
 	return SUCCESS;
 }
@@ -348,14 +434,14 @@ ErrorType Game::Update()
 		framesToFreeze--;
 	}
 
-	objectManager.renderAll();
-	objectManager.updateAll(float(gt.mdFrameTime));
-	objectManager.checkAllCollisions();
-	objectManager.deleteInactiveObjects();
+	objectManager.RenderAll();
+	objectManager.UpdateAll(float(gt.mdFrameTime));
+	objectManager.CheckAllCollisions();
+	objectManager.DeleteInactiveObjects();
 
 	/*ObjectManager objectFac;
-	objectFac.renderAll();
-	objectFac.updateAll(float(gt.mdFrameTime));*/
+	objectFac.RenderAll();
+	objectFac.UpdateAll(float(gt.mdFrameTime));*/
 	
    // *********************************************************************
    // *********************************************************************
@@ -372,7 +458,7 @@ ErrorType Game::EndOfGame()
 {
    // Add code here to tidy up ********************************************
    // *********************************************************************
-	objectManager.deleteAll();
+	objectManager.DeleteAll();
 	return SUCCESS;
 }
 

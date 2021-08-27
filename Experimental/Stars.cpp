@@ -1,30 +1,15 @@
+//Author: w18024358
+//Purpose: To provide visual effects to the game to make it feel like space as well as 
+//providing visual ques to the player in the HUnted game mode that they are moving around the terrain
 #include "Stars.h"
 
-Stars::Stars()
-{
-
-}
-
-void Stars::initialise(Vector2D startPosition)
+void Stars::Initialise(Vector2D startPosition)
 {
 	position = startPosition;
 	angle = 0;
 	LoadImage(L"star.bmp");
 }
 
-void Stars::update(float frameTime)
-{
-	
-}
-
-IShape2D& Stars::GetShape()
-{
-	collisionShape.PlaceAt(position, 32);
-	return collisionShape;
-}
-
-void Stars::HandleCollision(GameObject& other)
-{
-
-}
-
+void Stars::Update(float frameTime) {}
+IShape2D& Stars::GetShape() { return collisionShape; }
+void Stars::HandleCollision(GameObject& other) {}

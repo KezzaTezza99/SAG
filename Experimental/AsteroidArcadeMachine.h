@@ -1,24 +1,22 @@
+//Author: w18024358
+//Purpose: Placing a asteroid arcade machine that when the player collides with
+//starts the asteroids mini game
+
 #pragma once
 #include "GameObject.h"
 #include "ObjectManager.h"
-#include "AsteroidsLevelManager.h"
-#include "GameManager.h"
 
 class AsteroidArcadeMachine: public GameObject
 {
 private:
 	ObjectManager* pObjectManager;
-	//SpaceInvadersArcadeMachine* pSpaceInvaders;
 	Circle2D collisionShape;
-	bool startMiniGame;
-	
+	bool startMiniGame;								//Used to start Mini Game
 public:
 	AsteroidArcadeMachine();
-	~AsteroidArcadeMachine();
-	void initialise(ObjectManager* pObjectManager);
-	void update(float frameTime);
+	void Initialise(ObjectManager* pObjectManager);
+	void Update(float frameTime);
 	IShape2D& GetShape();
 	void HandleCollision(GameObject& other);
 	void DrawCollision();
-	void SetActivity();
 };

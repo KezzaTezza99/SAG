@@ -1,3 +1,5 @@
+//Author: w18024358
+//Purpose: The purpose of this class is to provide the user with a playerable character for the Space Invader Mini Game
 #pragma once
 #include "GameObject.h"
 #include "ObjectManager.h"
@@ -13,12 +15,10 @@ private:
 	ObjectManager* pObjectManager;
 	SpaceInvaderLevelManager* pLevelManager;
 	float shootDelay;
-
 public:
 	SpaceInvaderPlayer();
-	~SpaceInvaderPlayer();
-	void initialise(ObjectManager* pObjectManager, SpaceInvaderLevelManager* pLevelManager, Vector2D startPosition);
-	void update(float frameTime);
+	void Initialise(ObjectManager* pObjectManager, SpaceInvaderLevelManager* pLevelManager, Vector2D startPosition);
+	void Update(float frameTime);
 	IShape2D& GetShape();
 	void HandleCollision(GameObject& other);
 	void DrawCollision();

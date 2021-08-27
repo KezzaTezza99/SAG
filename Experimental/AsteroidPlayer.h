@@ -1,33 +1,28 @@
+//Author: w18024358
+//Purpose: The purpose of this class is to provide a playable character to the user who can interact with the 
+//Asteroid Mini Game. The player will be able to move, shoot and collide with other entities in the Mini Game
 #pragma once
-#include "mydrawengine.h"
-#include "mysoundengine.h"
 #include "GameObject.h"
 #include "ObjectManager.h"
-#include "Rock.h"
+#include "AsteroidsLevelManager.h"
 
 class AsteroidPlayer: public GameObject
 {
 private:
 	Vector2D velocity;
-	Vector2D acceleration;
-	//This gives poiner to ObjectManager and allows us to create Bullets etc 
-	ObjectManager* pObjectManager;
-	float shootDelay;	//Allows us to shoot one bullet every time - every 0.5 seconds
+	Vector2D acceleration;	
+	ObjectManager* pObjectManager;					//Need to be able to create bullets and Explosions
+	AsteroidsLevelManager* pLevelManager;			//Used to tell the Level Manager when the Player dies
+	float shootDelay;								//Used to stop the Player from being able to Infinetly shoot
 	Circle2D collisionShape;
-	Rock* pAsteroids;
-	float RockImageSize;
-
+	float RockImageSize;							//Used for differnet collisions based on the Asteroid Size
 public:
 	AsteroidPlayer();
-	~AsteroidPlayer();
-	void initialise(ObjectManager* pObjectManager, Rock* pAsteroids = nullptr);		//Defualt nullptr for AsteroidPlayer in Arcade
-	void update(float frameTime);
+	void Initialise(ObjectManager* pObjectManager, AsteroidsLevelManager* pLevelManager);
+	void Update(float frameTime);
 	IShape2D& GetShape();
 	void HandleCollision(GameObject& other);
 	void DrawCollision();
-	Vector2D getPosition();
-	bool isDead() const;
-	float getAngle();
 };
 
 

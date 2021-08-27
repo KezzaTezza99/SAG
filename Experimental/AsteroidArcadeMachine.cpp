@@ -1,48 +1,45 @@
+//Author: w18024358
+//Purpose: Implement the code needed for the arcade machine to work
 #include "AsteroidArcadeMachine.h"
 #include "ArcadePlayer.h"
+#include "AsteroidsLevelManager.h"
 
 AsteroidArcadeMachine::AsteroidArcadeMachine()
 {
     this->pObjectManager = pObjectManager;
-    
-    position.set(0, 0);
+    position.set(-600, 500);
     startMiniGame = false;
 }
 
-AsteroidArcadeMachine::~AsteroidArcadeMachine()
-{
-}
-
-void AsteroidArcadeMachine::initialise(ObjectManager* pObjectManager)
+void AsteroidArcadeMachine::Initialise(ObjectManager* pObjectManager)
 {
     this->pObjectManager = pObjectManager;
-    //this->pSpaceInvaders = pSpaceInvaders;
-
-    position.set(100, 100);
+    //Not using PlayingArea here becasue some reason even though the X is on the Right it keeps appearing on the Left? 
+    //and vice versa so having to use extreme numbers to get it where I want.
+    //tried GetTopRight / Left and it appears todo the Opposite
+    position.set(-600, 500);
     startMiniGame = false;
-    LoadImage(L"enemy.bmp");            //Change this
+    LoadImage(L"AsteroidMachine.png");           
 }
 
-void AsteroidArcadeMachine::update(float frameTime)
+void AsteroidArcadeMachine::Update(float frameTime)
 {
     //Starts the Asteroids
     if (startMiniGame)
     {
         //Adding Asteroid Level Manager
         AsteroidsLevelManager* pLevelManager = new AsteroidsLevelManager();
-        pLevelManager->initialise(&*pObjectManager, &*pLevelManager);       //Passing self to give to other Entities
-        pObjectManager->addObject(pLevelManager);
+        pLevelManager->Initialise(&*pObjectManager);
+        pObjectManager->AddObject(pLevelManager);
 
         //Delete the Asteroids Arcade Machine
         Deactivate();
-        //Deleting Space Invaders Arcade Machine
-        //pSpaceInvaders->Deactivate();
     }
 }
 
 IShape2D& AsteroidArcadeMachine::GetShape()
 {
-    collisionShape.PlaceAt(position, 50.0f);
+    collisionShape.PlaceAt(position, 200.0f);
     return collisionShape;
 }
 
@@ -58,11 +55,6 @@ void AsteroidArcadeMachine::HandleCollision(GameObject& other)
 void AsteroidArcadeMachine::DrawCollision()
 {
     MyDrawEngine::GetInstance()->FillCircle(collisionShape.GetCentre(), collisionShape.GetRadius(), MyDrawEngine::LIGHTGREEN);
-}
-
-void AsteroidArcadeMachine::SetActivity()
-{
-    isActive = false;
 }
 
 

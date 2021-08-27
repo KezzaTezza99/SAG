@@ -1,21 +1,16 @@
+//Author: w18024358
+//Purpose: Implement the necessary code to implement all the Asteroid Players functionallity
 #include "AsteroidPlayer.h"
 #include "myinputs.h"
 #include "Bullet.h"
-#include <typeinfo>
 #include "Rock.h"
-#include "EnemyShip.h"
 #include "Explosion.h"
 #include "Mines.h"
-#include "AsteroidArcadeMachine.h"
 
-const float cAcceleration = 200.0f;	
-//const float cGravity = 250.0f;	
-const float cFriction = 0.5f;	
-const float cTurnSpeed = 1.0f; 
-const float BULLETSPEED = 400.0f;
-
+//Need other Entities to know about Players location to stop entities spawning randomly on top or near player
 AsteroidPlayer::AsteroidPlayer()
 {
+	//Initilising all the Variables
 	position.set(0, 0);
 	velocity.set(0, 0);
 	angle = 0;
@@ -23,14 +18,10 @@ AsteroidPlayer::AsteroidPlayer()
 	RockImageSize = 0.0f;
 	//This is here to stop a warning I was getting with not initilazing member variables
 	this->pObjectManager = pObjectManager;
-	this->pAsteroids = pAsteroids;
+	this->pLevelManager = pLevelManager;
 }
 
-AsteroidPlayer::~AsteroidPlayer()
-{
-}
-
-void AsteroidPlayer::initialise(ObjectManager* pObjectManager, Rock* pAsteroids)
+void AsteroidPlayer::Initialise(ObjectManager* pObjectManager, AsteroidsLevelManager* pLevelManager)
 {
 	//Repeating basically the same as Constructor just making sure Everything is set 
 	//On the chance that the Constructor Fails all values will be set here anyway
@@ -40,19 +31,21 @@ void AsteroidPlayer::initialise(ObjectManager* pObjectManager, Rock* pAsteroids)
 	RockImageSize = 0.0f;
 	LoadImage(L"spaceship.bmp");
 	this->pObjectManager = pObjectManager;
-	this->pAsteroids = pAsteroids;
+	this->pLevelManager = pLevelManager;
 	shootDelay = 0;
 }
 
-void AsteroidPlayer::update(float frameTime)
+void AsteroidPlayer::Update(float frameTime)
 {
-	//Allowing the AsteroidPlayer to move endlessly 
-	//MyDrawEngine::GetInstance()->theCamera.PlaceAt(Vector2D(position.XValue + 0.0f, -position.YValue + 0.0f));
+	const float cAcceleration = 400.0f;
+	const float cFriction = 0.5f;
+	const float cTurnSpeed = 1.5f;
+	const float BULLETSPEED = 500.0f;
+
+	//Allowing the Player to Wrap the Screen
 	WrapScreen();
-
-	//Keep getting the Asteroids size? May fix the occusional small rock killing me
-	pAsteroids->GetImageSize();
-
+	
+	//Getting Keyboard Input
 	MyInputs* pInputs = MyInputs::GetInstance();
 	pInputs->SampleKeyboard();
 
@@ -80,20 +73,21 @@ void AsteroidPlayer::update(float frameTime)
 	position = position + velocity * frameTime;
 	
 	//Shooting
-	if (pInputs->KeyPressed(DIK_SPACE) && shootDelay <= 0)	//Only allowed to shoot when shoot delay is 0
+	//Only allowed to shoot when space is pressed and when shoot delay is 0
+	if (pInputs->KeyPressed(DIK_SPACE) && shootDelay <= 0)	
 	{
 		Bullet* pBullet = new Bullet();
 		if(pBullet)
 		{
 			Vector2D vel;
 			vel.setBearing(angle, BULLETSPEED);
-			Vector2D offset;	//This will make the bullets appear in front of AsteroidPlayer not centre
+			Vector2D offset;						//This will make the bullets appear in front and not centre
 			offset.setBearing(angle, 45.0f);
-			pBullet->initialise(position + offset, vel + velocity);
+			pBullet->Initialise(position + offset, vel + velocity);
 			if (pObjectManager)
 			{
-				pObjectManager->addObject(pBullet);
-				shootDelay = 0.5f;	//Setting to 0.5 every time we have shot one bullet
+				pObjectManager->AddObject(pBullet);
+				shootDelay = 0.5f;					//Setting to 0.5 every time we have shot one bullet
 			}
 		}
 	}
@@ -103,51 +97,22 @@ void AsteroidPlayer::update(float frameTime)
 
 IShape2D& AsteroidPlayer::GetShape()
 {
-	collisionShape.PlaceAt(position, 30.0f);
+	collisionShape.PlaceAt(position, 30.0f);	
 	return collisionShape;
 }
 
 void AsteroidPlayer::HandleCollision(GameObject& other)
 {
-	//If the Image Size is 1 (big rock) want AsteroidPlayer to die
-	//Otherwise rock will bounce off / collide with AsteroidPlayer
-	if (typeid(other) == typeid(Rock))
+	if (typeid(other) == typeid(Rock) || typeid(other) == typeid(Mines))
 	{
-		if (pAsteroids)
-		{
-			//Get The Size
-			/*GetAsteroidSize()*/
-			if (pAsteroids->GetImageSize() == 1.0f)
-			{
-				isActive = false;
-				Explosion* pExplosion = new Explosion();
-				pExplosion->initialise(position);
-				pObjectManager->addObject(pExplosion);
-			}
-			else
-			{
-				//Creating a Vector for the Normal
-				Vector2D normal = (position - other.getPosition()).unitVector();
-				if (normal * velocity < 0)
-				{
-					velocity = velocity - 2 * (velocity * normal) * normal;
-					velocity = velocity * 0.6f;
-				}
-			}
-		}
-	}
-
-	if (typeid(other) == typeid(EnemyShip) || typeid(other) == typeid(Mines))
-	{
-		isActive = false;
+		//Deactivating the Player if it collides with anything
+		Deactivate();
+		//Creating an Explosion
 		Explosion* pExplosion = new Explosion();
-		pExplosion->initialise(position);
-		pObjectManager->addObject(pExplosion);
-	}
-
-	if (typeid(other) == typeid(AsteroidArcadeMachine))
-	{
-		isActive = false;
+		pExplosion->Initialise(position);
+		pObjectManager->AddObject(pExplosion);
+		//Telling Level Manager the Game is Over as the Player has died - This will change if I implement health / lives
+		pLevelManager->GameOver();
 	}
 }
 
@@ -157,19 +122,4 @@ void AsteroidPlayer::DrawCollision()
 	MyDrawEngine::GetInstance()->FillCircle(collisionShape.GetCentre(), collisionShape.GetRadius(), MyDrawEngine::LIGHTGREEN);
 	//Line Showing the Direction of Object
 	MyDrawEngine::GetInstance()->DrawLine(position, position + velocity, MyDrawEngine::RED);
-}
-
-Vector2D AsteroidPlayer::getPosition()
-{
-	return position;
-}
-
-bool AsteroidPlayer::isDead() const
-{
-	return isActive;
-}
-
-float AsteroidPlayer::getAngle()
-{
-	return angle;
 }

@@ -1,43 +1,45 @@
+//Author: w18024358
+//Purpose: Implement code to allow for 
 #include "GameObject.h"
-// TO-DO
-//MAKE GAME OBJECTS TELL LEVEL MANAGER WE HAVE DIED TO STOP NULL POINTER WHEN WE DEAD
-//MAKE COMPONENT SYSTEM
+
 GameObject::GameObject()
 {
-	image = -1;		//There isnt an Image yet
-	angle = 0;
-	position.set(0, 0);
-	isActive = true;
-	imageSize = 1.0f;
+	image = -1;										//There isnt an Image yet
+	angle = 0;										//Angle should be 0 to begin
+	position.set(0, 0);								
+	isActive = true;								//Every Game Object will be Active to begin
+	imageSize = 1.0f;								//Defualt size of Game Object Bitmaps 
 
 	//Getting Dimensions of Screen to be used for a few reasons
 	//Wrapping screen and keep text etc in same location no matter on the users' screen
 	playingArea = MyDrawEngine::GetInstance()->GetViewport();
 }
 
-GameObject::~GameObject()
-{
-
-}
+GameObject::~GameObject() {}
 
 void GameObject::LoadImage(const wchar_t* filename)
 {
+	//Loading the Bitmap with the filename param that is passed
 	image = MyDrawEngine::GetInstance()->LoadPicture(filename);
 }
 
-void GameObject::render()
+void GameObject::Render()
 {
+	//Drawing the Game Object
 	MyDrawEngine::GetInstance()->DrawAt(position, image, imageSize, angle);
 }
 
-bool GameObject::checkIfActive() const
+bool GameObject::CheckIfActive() const
 {
+	//Used to check if active as some operations will need this information
 	return isActive;
 }
 
+//Used for Debugging 
 void GameObject::DrawCollision() {}
 
-Vector2D GameObject::getPosition()
+//Useful for some functionallity 
+Vector2D GameObject::GetPosition()
 {
 	return position;
 }
@@ -54,8 +56,7 @@ float GameObject::GetImageSize() const
 
 void GameObject::WrapScreen()
 {
-	//Wrapping the AsteroidPlayer around the screen
-
+	//Wrapping the screen
 	//Up and Down
 	if (position.YValue > playingArea.GetTopLeft().YValue + 40)			//Now off top of screen
 	{
